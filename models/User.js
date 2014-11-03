@@ -1,24 +1,115 @@
-var users = [
-	{
-		email: 'jamie.czerwinski@gmail.com',
-		password: 'test'
-	}
-]
+var mongoose = require('mongoose');
+var bcrypt = require('bcryptjs');
+var crypto = require('crypto');
+var config = require('konfig')();
+var sendgrid = require('sendgrid')(config.keys.sendgrid.user, config.keys.sendgrid.pass);
+var bluebird = require('bluebird');
 
-function User (user) {
-	this.email = user.email;
-	this.password = user.password;
-	this.verifyPassword = function (password) {
-		return this.password === password;
+bluebird.promisifyAll(sendgrid);
+
+function generateVerificationKey() {
+	var howMany = 128;
+	var chars = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+	var rnd = crypto.randomBytes(howMany),
+		value = new Array(howMany),
+		len = chars.length;
+
+	for (var i = 0; i < howMany; i++) {
+		value[i] = chars[rnd[i] % len]
+	};
+
+	return value.join('');
+}
+
+var UserSchema = mongoose.Schema({
+	username: {
+		type: String,
+		match: /^[a-zA-Z0-9_.]{3,20}$/,
+		required: true,
+		unique: true,
+	},
+	password: {
+		type: String,
+		select: false,
+		match: /^[a-zA-Z0-9!-_.]{8,}$/,
+		required: true,
+		set: function set(password) {
+			return bcrypt.hashSync(password, 10);
+		}
+	},
+	email: {
+		type: String,
+		required: true,
+		lowercase: true,
+		unique: true
+	},
+	name: {
+		type: String
+	},
+	bruteForce: {
+		type: {},
+		default: function() {
+			return {
+				updated: Date.now(),
+				value: 0
+			};
+		},
+		select: false
+	},
+	emailVerificationKey: {
+		type: String,
+		default: generateVerificationKey,
+		select: false
+	}
+}, {
+	_id: false
+});
+
+UserSchema.methods.isBruteForcing = function isBruteForcing() {
+	var now = Date.now();
+	// Linearly decrease the brute force counter at a rate of 10 per day
+	this.bruteForce = {
+		updated: now,
+		value: Math.max(0, 1 + this.bruteForce.value - 10 * (now - this.bruteForce.updated) / (1000 * 60 * 60 * 24))
 	};
 };
 
-User.findOne = function (user) {
-	return new Promise(function (resolve) {
-		resolve(new User(users.find(function(usr) {
-			return user.email === usr.email;
-		})));
-	});
+UserSchema.methods.verifyPassword = function verifyPassword(password) {
+	return bcrypt.compareSync(password, this.password);
 };
 
+UserSchema.methods.sendVerificationEmail = function sendVerificationEmail() {
+	var mail = {
+		from: 'info@ethive.com',
+		to: this.email,
+		subject: 'Welcome to Ethive!',
+		text: 'Please confirm. ' + 'https://localhost:3001/api/verifyEmail/' + this.emailVerificationKey // TODO
+	};
+	return sendgrid.sendAsync(mail);
+};
+
+UserSchema.methods.isVerified = function isVerified() {
+	return !this.emailVerificationKey;
+};
+
+
+
+UserSchema.static('verifyEmail', function verifyEmailStatic(key) {
+	return this.findOneAsync({
+			emailVerificationKey: key
+		})
+		.then(function(user) {
+			if (user) {
+				// Found a user by this key! Delete the key.
+				user.emailVerificationKey = '';
+				return user.saveAsync();
+			};
+			// No such user.
+			return null;
+		});
+});
+
+var User = mongoose.model('User', UserSchema);
+bluebird.promisifyAll(User);
+bluebird.promisifyAll(User.prototype);
 module.exports = User;

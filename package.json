@@ -3,27 +3,32 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node --harmony app.js",
-    "dev": "nodemon --harmony app.js",
-    "test": "mocha --harmony"
+    "start": "nodemon --harmony app.js",
+    "test": "NODE_ENV=test mocha --harmony"
   },
   "dependencies": {
+    "bcryptjs": "^2.0.2",
+    "bluebird": "^2.3.6",
     "co-body": "^0.0.1",
     "co-views": "^0.2.0",
     "koa": "^0.6.0",
     "koa-body-parser": "^1.1.0",
+    "koa-compose": "^2.3.0",
     "koa-compress": "^1.0.6",
-    "koa-cors": "0.0.8",
+    "koa-force-ssl": "0.0.3",
+    "koa-jwt": "0.0.3",
     "koa-logger": "^1.2.0",
     "koa-passport": "^0.4.0",
     "koa-router": "^3.1.4",
     "koa-static": "^1.4.5",
+    "konfig": "^0.2.0",
+    "mongoose": "^3.8.15",
     "passport-local": "^1.0.0",
+    "sendgrid": "^1.2.1",
     "swig": "^1.3.2"
   },
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-contrib-watch": "^0.6.1",
+    "apidoc": "^0.6.5",
     "mocha": "^1.18.2",
     "supertest": "^0.12.1"
   }

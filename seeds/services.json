@@ -1,0 +1,79 @@
+[{
+    "name": "Orthopedic Surgery",
+    "id": "orthopedic-surgery",
+    "description": "Orthopedic surgery is a medical procedure performed by an accredited orthopedic surgeon. It is generally performed to treat conditions of the musculoskeletal system.",
+    "type": "category",
+    "admins": ["jczerwinski"]
+}, {
+    "name": "Orthopedic Shoulder Surgery",
+    "parent": "orthopedic-surgery",
+    "id": "orthopedic-shoulder-surgery",
+    "type": "category",
+    "description": "Orthopedic shoulder surgery services."
+}, {
+    "name": "Orthopedic Upper Arm Surgery",
+    "parent": "orthopedic-surgery",
+    "type": "category",
+    "id": "orthopedic-upper-arm-surgery",
+    "description": "Orthopedic upper arm surgery services."
+}, {
+    "name": "Orthopedic Hand Surgery",
+    "parent": "orthopedic-surgery",
+    "type": "category",
+    "id": "orthopedic-hand-surgery"
+}, {
+    "name": "Trigger Finger Release",
+    "parent": "orthopedic-hand-surgery",
+    "type": "service",
+    "id": "trigger-finger-release"
+} {
+    "name": "Dupuytren's Contracture Release",
+    "parent": "orthopedic-hand-surgery",
+    "type": "service",
+    "id": "dupuytrens-contracture-release"
+}, {
+    "name": "Orthopedic Wrist Surgery",
+    "parent": "orthopedic-surgery",
+    "id": "orthopedic-wrist-surgery",
+    "type": "category"
+}, {
+    "name": "Orthopedic Forearm Surgery",
+    "parent": "orthopedic-surgery",
+    "id": "orthopedic-forearm-surgery",
+    "type": "category"
+}, {
+    "name": "Elbow",
+    "parent": "orthopedic-surgery",
+    "id": "orthopedic-elbow-surgery",
+    "type": "category"
+}, {
+    "name": "Hip",
+    "parent": "orthopedic-surgery",
+    "id": "orthopedic-hip-surgery",
+    "type": "category"
+}, {
+    "name": "Knee",
+    "parent": "orthopedic-surgery",
+    "id": "orthopedic-knee-surgery",
+    "type": "category"
+}, {
+    "name": "Upper Leg",
+    "parent": "orthopedic-surgery",
+    "id": "orthopedic-upper-leg-surgery",
+    "type": "category"
+}, {
+    "name": "Lower Leg",
+    "parent": "orthopedic-surgery",
+    "id": "orthopedic-lower-leg-surgery",
+    "type": "category"
+}, {
+    "name": "Ankle",
+    "parent": "orthopedic-surgery",
+    "id": "orthopedic-ankle-surgery",
+    "type": "category"
+}, {
+    "name": "Foot",
+    "parent": "orthopedic-surgery",
+    "id": "orthopedic-foot-surgery",
+    "type": "category"
+}]

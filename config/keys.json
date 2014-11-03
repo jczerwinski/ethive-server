@@ -1,0 +1,8 @@
+{
+    "default": {
+        "sendgrid": {
+            "user": "jczerwinski",
+            "pass": "lEZ26dpkgohILZgnxf3Z"
+        }
+    }
+}
