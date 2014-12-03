@@ -5,7 +5,6 @@ mongoose.connect(config.app.mongodb);
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
 
 var fs = require('fs');
-var api = require('./api/api');
 var compress = require('koa-compress');
 var logger = require('koa-logger');
 var serve = require('koa-static');
@@ -13,8 +12,11 @@ var router = require('koa-router');
 var koa = require('koa');
 var bodyParser = require('koa-body-parser');
 var path = require('path');
+
 var User = require('api/User');
 var Service = require('api/Service');
+var Provider = require('api/Provider');
+
 var http = require('http');
 var https = require('https');
 var forceSSL = require('koa-force-ssl');
@@ -48,13 +50,18 @@ app
 	.post('/api/auth', auth)
 	.get('/api/services', Service.index)
 	.get('/api/services/:id', Service.show)
+	.post('/api/services', Service.create)
+	.put('/api/services/:id', Service.save)
 
 	// User
 	.get('/api/user', User.show)
-	.post('/api/user', User.create)
+	.post('/api/user', User.save)
 	.get('/api/verifyEmail/:emailVerificationKey', User.verifyEmail)
-	.get('/api/providers/:id', api.providers.show)
-	.get('/api/providers/:providerID/offers/:offerID', api.providers.offers.show);
+
+	// Provider
+	.post('/api/providers', Provider.create)
+	.get('/api/providers/:id', Provider.show)
+	.get('/api/providers/:providerID/offers/:offerID', Provider.offers.show);
 
 // Serve static files
 app.use(serve(path.join(__dirname, 'webapp/app'))); // In development env... for now!

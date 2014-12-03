@@ -3,9 +3,10 @@ var bcrypt = require('bcryptjs');
 var crypto = require('crypto');
 var config = require('konfig')();
 var sendgrid = require('sendgrid')(config.keys.sendgrid.user, config.keys.sendgrid.pass);
-var bluebird = require('bluebird');
+var Promise = require('bluebird');
+var auth = require('../lib/auth');
 
-bluebird.promisifyAll(sendgrid);
+Promise.promisifyAll(sendgrid);
 
 function generateVerificationKey() {
 	var howMany = 128;
@@ -22,7 +23,7 @@ function generateVerificationKey() {
 }
 
 var UserSchema = mongoose.Schema({
-	username: {
+	_id: {
 		type: String,
 		match: /^[a-zA-Z0-9_.]{3,20}$/,
 		required: true,
@@ -60,9 +61,25 @@ var UserSchema = mongoose.Schema({
 		type: String,
 		default: generateVerificationKey,
 		select: false
-	}
+	},
+	// Should not be persisted. Temp only.
+	providers: {}
 }, {
-	_id: false
+	// False does not work when attempting to save documents. Bug in mongoose.
+	_id: true
+});
+
+UserSchema.pre('save', function (next) {
+	this.providers = undefined;
+	next();
+});
+
+UserSchema.virtual('username').get(function () {
+	return this._id;
+});
+
+UserSchema.virtual('username').set(function(username) {
+	this._id = username;
 });
 
 UserSchema.methods.isBruteForcing = function isBruteForcing() {
@@ -92,7 +109,22 @@ UserSchema.methods.isVerified = function isVerified() {
 	return !this.emailVerificationKey;
 };
 
-
+UserSchema.methods.show = function show (user) {
+	if (user._id === this._id) {
+		// User wants his own account. Give everything.
+		var thisUser = this;
+		return mongoose.model('Provider').findAsync({
+			admins: this._id
+		}).then(function (providers) {
+			thisUser.providers = providers;
+			thisUser.token = auth.tokenize(thisUser);
+			return thisUser;
+		});
+	} else {
+		// Show nothing!
+		return Promise.cast({});
+	}
+};
 
 UserSchema.static('verifyEmail', function verifyEmailStatic(key) {
 	return this.findOneAsync({
@@ -110,6 +142,6 @@ UserSchema.static('verifyEmail', function verifyEmailStatic(key) {
 });
 
 var User = mongoose.model('User', UserSchema);
-bluebird.promisifyAll(User);
-bluebird.promisifyAll(User.prototype);
+Promise.promisifyAll(User);
+Promise.promisifyAll(User.prototype);
 module.exports = User;

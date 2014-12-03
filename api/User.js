@@ -18,7 +18,7 @@ User.auth = function * (next) {
 			throw err;
 		}
 		if (user === false) {
-			ctx.status = 401;
+			ctx.status = 403;
 			ctx.body = info;
 		} else {
 			ctx.body = user.authToken();
@@ -35,9 +35,14 @@ User.auth = function * (next) {
  * @apiParam {String} [email] The email of the user. Optional.
  */
 User.show = function * (next) {
-	// Valid query? Username/email only TODO
+	// Users can only see their own account. User accounts are private.
 	if (this.query.username || this.query.email) {
-		this.body = yield UserModel.findOne(this.query).exec();
+		var query = {};
+		if (this.query.username) query._id = this.query.username;
+		if (this.query.email) query.email = this.query.email;
+		var user = yield UserModel.findOneAsync(query);
+		this.body = yield user.show(this.user);
+		console.log(this.body)
 		this.status = this.body ? 200 : 404;
 	} else {
 		this.status = 400;
@@ -45,25 +50,27 @@ User.show = function * (next) {
 	yield next;
 };
 
-User.create = function * (next) {
-	var user = new UserModel(this.req.body);
-	this.status = yield user.saveAsync()
-		.then(function(user) {
-				return user[0].sendVerificationEmail().then(function() {
-					// sent confirmation email
-					return 201;
-				}, function(err) {
-					// Couldn't send confirmation email
-					// remove could be async, but why? If it fails, not much we can do. account should be automatically purged, anyway, after a certain period of time.
-					user[0].remove();
-					return 500;
+User.save = function * (next) {
+	var existingUser = yield UserModel.findOneAsync({_id: this.req.body._id});
+	if (existingUser) {
+		// Update
+	} else {
+		// Create
+		var user = new UserModel(this.req.body);
+		this.status = yield user.saveAsync()
+			.then(function(user) {
+					return user[0].sendVerificationEmail().then(function() {
+						// sent confirmation email
+						return 201;
+					}, function(err) {
+						// Couldn't send confirmation email
+						// remove could be async, but why? If it fails, not much we can do. account should be automatically purged, anyway, after a certain period of time.
+						user[0].remove();
+						return 500;
+					});
 				});
-			},
-			function(err) {
-				// Couldn't save user.
-				return 500;
-			});
-	yield next;
+		yield next;
+	}
 };
 
 User.verifyEmail = function * (next) {
