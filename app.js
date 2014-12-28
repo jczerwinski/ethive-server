@@ -38,7 +38,8 @@ app.use(function * (next) {
 app.use(logger());
 
 // Security
-app.use(forceSSL(config.app.https_port));
+ 
+//app.use(forceSSL(config.app.https_port));
 
 app.use(bodyParser());
 
@@ -48,14 +49,17 @@ app.use(auth.initialize());
 app.use(router(app));
 app
 	.post('/api/auth', auth)
+
+	// Services
 	.get('/api/services', Service.index)
 	.get('/api/services/:id', Service.show)
 	.post('/api/services', Service.create)
 	.put('/api/services/:id', Service.save)
 
 	// User
-	.get('/api/user', User.show)
-	.post('/api/user', User.save)
+	.get('/api/users', User.query)
+	.get('/api/users/:username', User.show)
+	.post('/api/users', User.save)
 	.get('/api/verifyEmail/:emailVerificationKey', User.verifyEmail)
 
 	// Provider

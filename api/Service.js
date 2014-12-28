@@ -10,17 +10,9 @@ module.exports = Service;
 Service.index = function * (next) { // TODO Handle errors
 	var ctx = this;
 	// Get top level services
-	ServiceModel.find({
-		parent: undefined
-	}).exec().then(function(services) {
-		// Attach their children
-		ctx.body = services.map(function(service) {
-			service.getChildren().then(function(children) {
-				service.children = children;
-			});
-			return service;
-		});
-	});
+	var services = yield ServiceModel.index();
+	this.body = services;
+	// attach children?
 	yield next;
 };
 

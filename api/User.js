@@ -3,50 +3,33 @@ var UserModel = require('../models/User.js');
 var User = {};
 module.exports = User;
 
-/**
- * @api {post} /api/auth
- * @apiParam {String} username A User's username OR primary email address.
- * @apiParam {String} password A User's password
- * @apiSuccess {}
- */
-User.auth = function * (next) {
-	var ctx = this;
-	yield passport.authenticate('local', {
-		session: false
-	}, function * (err, user, info) {
-		if (err) {
-			throw err;
-		}
-		if (user === false) {
-			ctx.status = 403;
-			ctx.body = info;
-		} else {
-			ctx.body = user.authToken();
-		}
-	}).call(this, next);
-};
-
-/**
- * @api {get} /user?username=:username&email=:email
- * @apiName GetUser
- * @apiGroup User
- *
- * @apiParam {String} [username] The username of the user. Optional.
- * @apiParam {String} [email] The email of the user. Optional.
- */
-User.show = function * (next) {
+User.query = function * (next) {
 	// Users can only see their own account. User accounts are private.
 	if (this.query.username || this.query.email) {
 		var query = {};
-		if (this.query.username) query._id = this.query.username;
+		if (this.query.username) query.username = this.query.username;
 		if (this.query.email) query.email = this.query.email;
 		var user = yield UserModel.findOneAsync(query);
 		this.body = yield user.show(this.user);
-		console.log(this.body)
 		this.status = this.body ? 200 : 404;
 	} else {
 		this.status = 400;
 	}
+	yield next;
+};
+
+/**
+ * @api {get} /users/:username
+ * @apiName GetUser
+ * @apiGroup User
+ *
+ * @apiParam {String} [username] The username of the user.
+ */
+User.show = function * (next) {
+	// Users can only see their own account. User accounts are private.
+	var user = yield UserModel.findOneAsync({_id: this.params.username});
+	this.body = yield user.show(this.user);
+	this.status = this.body ? 200 : 404;
 	yield next;
 };
 

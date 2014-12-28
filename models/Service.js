@@ -18,13 +18,15 @@ var ServiceSchema = Schema({
 	parent: {
 		type: String,
 		ref: 'Service',
-		validate: function (value, respond) {
+		validate: function(value, respond) {
 			// TODO -- needs to be tested
 			var service = this;
 			// Services must have existing parents.
-			return this.constructor.findOneAsync({_id: value}).then(function (newParent) {
+			return this.constructor.findOneAsync({
+				_id: value
+			}).then(function(newParent) {
 				if (newParent) {
-					return newParent.populateAncestors().then(function () {
+					return newParent.populateAncestors().then(function() {
 						return respond(!newParent.hasAncestor(service));
 					})
 				} else {
@@ -36,7 +38,8 @@ var ServiceSchema = Schema({
 	type: {
 		// Categories can have children, but not offers. Services can have offers, but not children.
 		type: String,
-		enum: ['category', 'service']
+		enum: ['category', 'service'],
+		required: true
 	},
 	status: {
 		type: String,
@@ -66,6 +69,30 @@ ServiceSchema.pre('save', function(next) {
 	this.offers = undefined;
 	next();
 });
+
+// Gives an index of all services. Indexed versions include _id, name, description, type, and children.
+ServiceSchema.statics.index = function(user) {
+	return this.findAsync().then(function(services) {
+		var map = services.reduce(function (map, service) {
+			map[service._id] = service;
+			return map;
+		}, {});
+		var forest = [];
+		services.forEach(function (service) {
+			if (service.parent === undefined) {
+				forest.push(service);
+			} else {
+				var parent = map[service.parent];
+				if (parent.children) {
+					parent.children.push(service);
+				} else {
+					parent.children = [service];
+				}
+			}
+		});
+		return forest;
+	});
+};
 
 ServiceSchema.methods.populateChildren = function getChildren() {
 	var service = this;
@@ -143,21 +170,22 @@ ServiceSchema.methods.toPublic = function toPublic() {
 	return this;
 };
 
-// Synchronous. Requires populated ancestors.
+// Synchronous. Requires populated ancestors first.
 ServiceSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
 	if (!user) return false;
 	if (this.admins.some(function(admin) {
-		return admin === user.username;
+		return admin === user._id;
 	})) return true;
 	return this.parent ? this.parent.isAdministeredBy(user) : false;
 };
 
 // Checks ancestors, this for draft status. Ancestors must already be populated.
 ServiceSchema.methods.isDraft = function isDraft() {
-	 return this.type === 'draft' || this.parent ? this.parent.isDraft() : false;
+	return this.type === 'draft' || this.parent ? this.parent.isDraft() : false;
 };
 
 var ServiceModel = mongoose.model('Service', ServiceSchema);
+
 Promise.promisifyAll(ServiceModel);
 Promise.promisifyAll(ServiceModel.prototype);
 

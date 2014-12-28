@@ -67,6 +67,8 @@ ProviderSchema.methods.show = function(user) {
             provider.userIsAdmin = true;
             return provider;
         });*/
+        provider = provider.toObject();
+        provider.userIsAdmin = true;
         return Promise.cast(provider);
     } else {
         // User isn't admin.
@@ -84,7 +86,7 @@ ProviderSchema.methods.show = function(user) {
 ProviderSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
     if (!user) return false;
     if (this.admins.some(function(admin) {
-        return admin === user.username;
+        return admin === user._id;
     })) return true;
     return false;
 };

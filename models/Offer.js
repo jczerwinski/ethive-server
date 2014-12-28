@@ -41,7 +41,7 @@ OfferSchema.methods.show = function(user) {
 OfferSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
     if (!user) return false;
     if (this.admins.some(function(admin) {
-        return admin === user.username;
+        return admin === user._id;
     })) return true;
     return false;
 };

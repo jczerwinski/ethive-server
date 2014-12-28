@@ -4,7 +4,6 @@ var crypto = require('crypto');
 var config = require('konfig')();
 var sendgrid = require('sendgrid')(config.keys.sendgrid.user, config.keys.sendgrid.pass);
 var Promise = require('bluebird');
-var auth = require('../lib/auth');
 
 Promise.promisifyAll(sendgrid);
 
@@ -117,7 +116,6 @@ UserSchema.methods.show = function show (user) {
 			admins: this._id
 		}).then(function (providers) {
 			thisUser.providers = providers;
-			thisUser.token = auth.tokenize(thisUser);
 			return thisUser;
 		});
 	} else {
