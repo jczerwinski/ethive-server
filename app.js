@@ -65,7 +65,8 @@ app
 	// Provider
 	.post('/api/providers', Provider.create)
 	.get('/api/providers/:id', Provider.show)
-	.get('/api/providers/:providerID/offers/:offerID', Provider.offers.show);
+	.get('/api/providers/:providerID/offers/:offerID', Provider.offers.show)
+	.post('/api/providers/:providerID/offers', Provider.offers.create);
 
 // Serve static files
 app.use(serve(path.join(__dirname, 'webapp/app'))); // In development env... for now!

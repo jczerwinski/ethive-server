@@ -1,5 +1,6 @@
 var Responder = require('../lib/Responder');
 var ProviderModel = require('../models/Provider');
+var OfferModel = require('../models/Offer');
 
 var Provider = module.exports = {};
 
@@ -15,7 +16,7 @@ Provider.create = function * (next) {
         var provider = new ProviderModel(this.req.body);
         this.status = yield provider.saveAsync().then(function(provider) {
             // Creation successful!
-            return 200;
+            return 201;
         }).catch(Responder.save.failure.status);
     }
     yield next;
@@ -73,4 +74,33 @@ Provider.offers.show = function * (next) {
     }
     this.body = offer;
     yield next;*/
+};
+
+Provider.offers.create = function * (next) {
+    var provider = yield ProviderModel.findOneAsync({
+        _id: this.params.providerID
+    });
+    if (provider) {
+        // Create
+        var offer = this.req.body;
+
+        // Add the provider to the offer -- doesn't have to be provided on the object in requests through their providers
+        offer.provider = this.params.providerID; 
+
+        offer = new OfferModel(offer);
+
+        var ctx = this;
+        yield offer.saveAsync().then(function(offer) {
+            // Creation successful!
+            ctx.status = 201;
+            ctx.body = offer;
+            return 201;
+        }).catch(function (err) {
+            ctx.status = Responder.save.failure.status(err);
+        });
+    } else {
+        // Provider not found
+        this.status = 404;
+    }
+    yield next;
 };

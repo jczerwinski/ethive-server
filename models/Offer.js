@@ -1,4 +1,21 @@
+/**
+ * Design note: A given provider can have multiple offers for the "same" configuration. This is easier to enforce and lets us be liberal in adding details to offers while not worrying too much if they are "duplicates" of each other. Less constraining in general. The drawback is that suppliers could "spam" the market. This can be prevented by collapsing all of a given provider's offers into a single view so as to prevent such spam.
+ *
+ * Prime use cases: find all offers for a provider.
+ *
+ *      - Find all offers for a service
+ *          - Sort, datatable view, batch editing? etc.
+ *      - Find all offers for a service by location
+ *      - Essentially lots of queries on offers
+ *
+ * Some design constraints:
+ *     - Don't want to reference offers from Services or Providers -- the set of offers could be much too big!
+ *     - Must reference, and should probably index Service from/on Offers, for queries.
+ *     - Service ID's are already guaranteed to be immutable, so it supports this.
+ *
+ */
 var mongoose = require('mongoose');
+
 var Schema = mongoose.Schema;
 var Promise = require('bluebird');
 
@@ -8,18 +25,40 @@ var OfferSchema = Schema({
         required: true,
         type: String,
         ref: 'Service'
-    }
+    },
     visibility: {
         type: String,
         enum: ['public', 'draft']
     },
     description: {
         type: String
+    },
+    provider: {
+        type: String,
+        ref: 'Provider'
+    },
+    price: {
+        // From this list: http://openexchangerates.org/currencies.json. Don't enforce to any one as it may change. Maybe watch on input of new listings? TODO
+        currency: {
+            type: String
+        },
+        amount: {
+            type: Number,
+            min: 0
+        }
     }
 }, {
     // False does not work when attempting to save documents. Bug in mongoose.
     _id: true
 });
+
+/*OfferSchema.path('price').validate(function (value) {
+    
+}, 'Invalid currency');*/
+
+OfferSchema.methods.create = function () {
+    // Allows multiple offers per provider/service combo. This is to facilitate 
+};
 
 OfferSchema.methods.show = function(user) {
     var offer = this;

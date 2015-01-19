@@ -4,7 +4,7 @@ var Service = {};
 module.exports = Service;
 
 /**
- * Gives an array of all available top level services with its children attached.
+ * Gives a forest of all services.
  * @public
  */
 Service.index = function * (next) { // TODO Handle errors

@@ -117,12 +117,17 @@ ServiceSchema.methods.populateChildren = function getChildren() {
 	});
 };
 
+/**
+ * Recursively populates this service's parent and its ancestors.
+ * @return {Service} This service, for method chaining.
+ */
 ServiceSchema.methods.populateAncestors = function populateAncestors() {
+	var ctx = this;
 	if (this.populated('parent')) {
 		return Promise.cast(this);
 	} else {
 		return this.populateAsync('parent').then(function(service) {
-			return service.parent ? service.parent.populateAncestors() : Promise.cast(undefined);
+			return service.parent ? service.parent.populateAncestors() : Promise.cast(ctx);
 		});
 	}
 };
@@ -139,35 +144,46 @@ ServiceSchema.methods.hasAncestor = function hasAncestor(ancestor) {
 	}
 };
 
+/**
+ * Provides a ready-for-http transformation of this Service.
+ * @param  {User} user The user we wish to show this Service.
+ * @return {ServiceObject} A plain object transformation of this Service.
+ */
 ServiceSchema.methods.show = function(user) {
 	var service = this;
 	//needs ancestors, userIsAdmin, children, offers. check if draft...
 	return this.populateAncestors().then(function() {
 		if (service.isAdministeredBy(user)) {
-			return service.populateChildren().then(function(service) {
-				service = service.toObject();
-				service.userIsAdmin = true;
-				return service;
-			});
+			// Admin requesting service. 
+			return service.showAdmin();
 		} else {
 			// Not an admin
 			if (service.isDraft()) {
-				return null;
+				return Promise.cast(null);
 			} else {
-				// Regular old service! Show it.
-				return service.populateChildren().then(function(service) {
-					return service.toPublic();
-				});
+				// Public service requested by public user. Show it as public.
+				return service.showPublic();
 			}
 		}
 	});
 };
 
-ServiceSchema.methods.toPublic = function toPublic() {
-	var public = this.toObject();
-	delete this.admins;
-	if (this.parent) this.parent = this.parent.toPublic();
-	return this;
+ServiceSchema.methods.showAdmin = function showAdmin() {
+	return this.populateChildren().then(function(service) {
+		return service.toObject();
+	});
+};
+
+ServiceSchema.methods.showPublic = function showPublic() {
+	return this.populateChildren().then(function(service) {
+		var public = service.toObject();
+		// Remove private info!!! Maybe mongoose supports hooks for this? TODO
+		delete service.admins;
+		// TODO Private/draft descendent services should not be visible!? Think about this first.
+		// Promise?
+		if (service.parent) service.parent = service.parent.showPublic();
+		return service;
+	});
 };
 
 // Synchronous. Requires populated ancestors first.
