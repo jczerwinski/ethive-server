@@ -13,9 +13,9 @@ var koa = require('koa');
 var bodyParser = require('koa-body-parser');
 var path = require('path');
 
-var User = require('api/User');
-var Service = require('api/Service');
-var Provider = require('api/Provider');
+var User = require('./api/User');
+var Service = require('./api/Service');
+var Provider = require('./api/Provider');
 
 var http = require('http');
 var https = require('https');
