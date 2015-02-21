@@ -18,18 +18,23 @@ var ServiceSchema = Schema({
 	parent: {
 		type: String,
 		ref: 'Service',
-		validate: function(value, respond) {
-			// TODO -- needs to be tested
+		// Need to ensure no cycles on parent, and that parent either exists or is null
+		validate: function (parentID, respond) {
 			var service = this;
-			// Services must have existing parents.
+			if (parentID === null) {
+				// Null parent -- OK to add root level service.
+				respond(true);
+			}
 			return this.constructor.findOneAsync({
-				_id: value
-			}).then(function(newParent) {
-				if (newParent) {
-					return newParent.populateAncestors().then(function() {
-						return respond(!newParent.hasAncestor(service));
+				_id: parentID
+			}).then(function (parent) {
+				if (parent) {
+					return parent.populateAncestors().then(function () {
+						// No cycles allowed.
+						return respond(!parent.hasAncestor(service));
 					})
 				} else {
+					// Parent does not exist. Not allowed.
 					return respond(false);
 				}
 			});
@@ -43,7 +48,8 @@ var ServiceSchema = Schema({
 	},
 	status: {
 		type: String,
-		enum: ['draft', 'published']
+		enum: ['draft', 'published'],
+		required: true
 	},
 	description: {
 		type: String
@@ -60,76 +66,186 @@ var ServiceSchema = Schema({
 	offers: {}
 }, {
 	// False does not work when attempting to save documents. Bug in mongoose.
-	_id: true
+	_id: true,
+	id: true,
+	toObject: {
+		//virtuals: true
+	}
 });
 
-// Ensure children and offers are not set on saved services. They should be dynamically generated.
-ServiceSchema.pre('save', function(next) {
+var EXCLUDE_PRIVATE_SELECT_STRING = '-admins'
+
+// Ensure children and offers are not set on saved services. They should be dynamically generated. TODO  Move to object definition?
+ServiceSchema.pre('save', function (next) {
+	// Only persist parent ID to db
+	this.parent = this.parent && this.parent._id ? this.parent._id : this.parent;
 	this.children = undefined;
 	this.offers = undefined;
 	next();
 });
 
-// Gives an index of all services. Indexed versions include _id, name, description, type, and children.
-ServiceSchema.statics.index = function(user) {
-	return this.findAsync().then(function(services) {
-		var map = services.reduce(function (map, service) {
-			map[service._id] = service;
-			return map;
-		}, {});
-		var forest = [];
-		services.forEach(function (service) {
-			if (service.parent === undefined) {
-				forest.push(service);
-			} else {
-				var parent = map[service.parent];
-				if (parent.children) {
-					parent.children.push(service);
-				} else {
-					parent.children = [service];
-				}
-			}
-		});
-		return forest;
+// Stopgap to support angular-restmod on the client. restmod requires populated fields and references to have different names. Should be fixed soon. See https://github.com/platanus/angular-restmod/issues/251
+ServiceSchema.virtual('parentId').set(function (parentId) {
+	this.parent = parentId;
+});
+
+ServiceSchema.virtual('parentId').get(function () {
+	// Only attach parentId if parent isn't populated. See https://github.com/platanus/angular-restmod/issues/251
+	return typeof this.populated('parent') ? undefined : this.parent;
+});
+
+ServiceSchema.virtual('childrenIds').set(function (childrenIds) {
+	// noop! Children are managed through "parent" property, cannot be changed through children property 
+});
+
+ServiceSchema.virtual('childrenIds').get(function () {
+	return this.children && this.populated('children') ? this.parent.parentId : this.parent;
+});
+
+// Gives an index of all services. Indexed versions include _id, name, description, type, and children. Admins are shown only if user administers the service.
+ServiceSchema.statics.index = function index(user) {
+	return this.findAsync({
+		parent: undefined
+	}).then(function (services) {
+		return Promise.reduce(services, function (authorizedServices, service) {
+			// Show to user, ready to go.
+			return service.show(user).then(function (service) {
+				if (service === null) return authorizedServices;
+				authorizedServices.push(service);
+				return authorizedServices;
+			});
+		}, []);
 	});
 };
 
-ServiceSchema.methods.populateChildren = function getChildren() {
+/**
+ * Provides a ready-for-http transformation of this Service.
+ * @param  {User} user The user we wish to show this Service.
+ * @return {ServiceObject} A plain object transformation of this Service. Null if the user is not authorized to view.
+ */
+ServiceSchema.methods.show = function show(user) {
+	var service = this;
+	//needs ancestors, children, offers. check if draft...
+	return this.populateAncestors().then(function () {
+		if (service.isAdministeredBy(user)) {
+			// Admin requesting service. 
+			return service.showAdmin();
+		}
+		// Not an admin
+		if (service.isPublished()) {
+			return service.showPublic();
+		}
+		// Hide
+		return Promise.cast(null);
+	});
+};
+
+/**
+ * Recursively populates this service's parent and its ancestors. Does nothing if already populated or if no parent exists.
+ * @return {Service} This service, wrapped in a promise, for method chaining.
+ */
+ServiceSchema.methods.populateAncestors = function populateAncestors() {
+	var ctx = this;
+	// If parent is already populated, or this service has no parent, return
+	if (this.populated('parent') || this.parent === undefined) {
+		return Promise.cast(this);
+	} else {
+		return this.populateAsync('parent').then(function (service) {
+			return service.parent ? service.parent.populateAncestors() : Promise.cast(ctx);
+		});
+	}
+};
+
+// Synchronous. Requires populated ancestors first.
+ServiceSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
+	if (!user) return false;
+	if (this.admins.some(function (admin) {
+			return admin === user._id;
+		})) return true;
+	return this.parent ? this.parent.isAdministeredBy(user) : false;
+};
+
+ServiceSchema.methods.showAdmin = function showAdmin() {
+	return this.populateChildren(true).then(function (service) {
+		return service.toObject();
+	});
+};
+
+ServiceSchema.methods.showPublic = function showPublic() {
+	return this.populateChildren().then(function (service) {
+		return service.toPublicObject();
+	});
+};
+
+/**
+ * Assumes that the service consists of ancestors and one layer of children or 
+ * @return {[type]} [description]
+ */
+ServiceSchema.methods.toPublicObject = function toPublicObject() {
+	if (this.parent && this.parent.toPublicObject) {
+		this.parent = this.parent.toPublicObject();
+	}
+	/*if (this.children) {
+		this.children = this.children.map(function (child) {
+			return child.toObject();
+		});
+	}
+	if (this.offers) {
+		this.offers = this.offers.map(function (offer) {
+			return offer.toObject();
+		});
+	}*/
+	var service = this.toObject();
+	delete service.admins;
+	return service;
+};
+
+/**
+ * Attaches this Service's children -- sub-services or offers, if any -- and returns itself as a promise.
+ */
+ServiceSchema.methods.populateChildren = function populateChildren(admin) {
 	var service = this;
 	if (this.type === 'category') {
-		return this.constructor.findAsync({
+		var query = {
 			parent: this.id
-		}).then(function(children) {
+		};
+		var select = '';
+		if (!admin) {
+			query.status = 'published';
+			select = EXCLUDE_PRIVATE_SELECT_STRING;
+		}
+		return this.constructor.findAsync(query, select).then(function (children) {
 			service.children = children;
 			return service;
 		});
 	}
 	if (this.type === 'service') {
-		/*return mongoose.model('Offer').findAsync({
+		// Service admins _can_ see  draft services. For support purposes.
+		var query = {
 			service: this.id
-		}).then(function(offers) {
+		};
+		if (!admin) {
+			query.status = 'public';
+		}
+		return mongoose.model('Offer').findAsync(query).then(function (offers) {
 			service.offers = offers;
 			return service;
-		});*/
+		});
 	}
-	return new Promise(function(resolve, reject) {
-		return resolve(service);
-	});
+	// Return the promise wrapped service by default
+	return Promise.cast(service);
 };
 
 /**
- * Recursively populates this service's parent and its ancestors.
- * @return {Service} This service, for method chaining.
+ * Checks whether this Service is available to the public. A Service is available to the public if:
+ *
+ *   - It has a "published" status.
+ *   - All its ancestors have a "published" status.
+ *
+ * @return {Boolean} `true` if available to the public. `false` otherwise.
  */
-ServiceSchema.methods.populateAncestors = function populateAncestors() {
-	var ctx = this;
-	if (this.populated('parent')) {
-		return Promise.cast(this);
-	} else {
-		return this.populateAsync('parent').then(function(service) {
-			return service.parent ? service.parent.populateAncestors() : Promise.cast(ctx);
-		});
-	}
+ServiceSchema.methods.isPublished = function isPublished() {
+	return this.status === 'published' && (!this.parent || this.parent.isPublished());
 };
 
 // Requires populateAncestors first
@@ -144,61 +260,6 @@ ServiceSchema.methods.hasAncestor = function hasAncestor(ancestor) {
 	}
 };
 
-/**
- * Provides a ready-for-http transformation of this Service.
- * @param  {User} user The user we wish to show this Service.
- * @return {ServiceObject} A plain object transformation of this Service.
- */
-ServiceSchema.methods.show = function(user) {
-	var service = this;
-	//needs ancestors, userIsAdmin, children, offers. check if draft...
-	return this.populateAncestors().then(function() {
-		if (service.isAdministeredBy(user)) {
-			// Admin requesting service. 
-			return service.showAdmin();
-		} else {
-			// Not an admin
-			if (service.isDraft()) {
-				return Promise.cast(null);
-			} else {
-				// Public service requested by public user. Show it as public.
-				return service.showPublic();
-			}
-		}
-	});
-};
-
-ServiceSchema.methods.showAdmin = function showAdmin() {
-	return this.populateChildren().then(function(service) {
-		return service.toObject();
-	});
-};
-
-ServiceSchema.methods.showPublic = function showPublic() {
-	return this.populateChildren().then(function(service) {
-		var public = service.toObject();
-		// Remove private info!!! Maybe mongoose supports hooks for this? TODO
-		delete service.admins;
-		// TODO Private/draft descendent services should not be visible!? Think about this first.
-		// Promise?
-		if (service.parent) service.parent = service.parent.showPublic();
-		return service;
-	});
-};
-
-// Synchronous. Requires populated ancestors first.
-ServiceSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
-	if (!user) return false;
-	if (this.admins.some(function(admin) {
-		return admin === user._id;
-	})) return true;
-	return this.parent ? this.parent.isAdministeredBy(user) : false;
-};
-
-// Checks ancestors, this for draft status. Ancestors must already be populated.
-ServiceSchema.methods.isDraft = function isDraft() {
-	return this.type === 'draft' || this.parent ? this.parent.isDraft() : false;
-};
 
 var ServiceModel = mongoose.model('Service', ServiceSchema);
 

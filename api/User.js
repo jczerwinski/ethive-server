@@ -10,8 +10,16 @@ User.query = function * (next) {
 		if (this.query.username) query.username = this.query.username;
 		if (this.query.email) query.email = this.query.email;
 		var user = yield UserModel.findOneAsync(query);
-		this.body = yield user.show(this.user);
-		this.status = this.body ? 200 : 404;
+		if (user) {
+			if (this.user) {
+				this.body = yield user.show(this.user);
+				this.status = this.body ? 200 : 403;
+			} else {
+				this.status = 403;
+			}
+		} else {
+			this.status = 404;
+		}
 	} else {
 		this.status = 400;
 	}
@@ -28,8 +36,19 @@ User.query = function * (next) {
 User.show = function * (next) {
 	// Users can only see their own account. User accounts are private.
 	var user = yield UserModel.findOneAsync({_id: this.params.username});
-	this.body = yield user.show(this.user);
-	this.status = this.body ? 200 : 404;
+	if (user) {
+		if (this.user) {
+			// User found. Requestor logged in.
+			this.body = yield user.show(this.user);
+			this.status = this.body ? 200 : 403;
+		} else {
+			// Not logged in.
+			this.status = 403;
+		}
+	} else {
+		// User not found
+		this.status = 404;
+	}
 	yield next;
 };
 

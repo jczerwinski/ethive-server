@@ -14,10 +14,6 @@ var ProviderSchema = Schema({
         unique: true,
         match: /^[a-z0-9-]{1,}$/
     },
-    visibility: {
-        type: String,
-        enum: ['public', 'private']
-    },
     ownership: {
         type: String,
         enum: ['ethive', 'private']
@@ -46,20 +42,26 @@ ProviderSchema.pre('save', function (next) {
  * @return {[type]} [description]
  */
 ProviderSchema.methods.populateOffers = function getOffers() {
+    // attach service to offers, too. need name especially
     var provider = this;
-    return mongoose.model('Offer').findAsync({
+    return mongoose.model('Offer').find({
         provider: this.id
-    }).then(function (offers) {
+    }).populate('service').exec().then(function (offers) {
         provider.offers = offers;
         return provider;
-    });
-    return new Promise(function (resolve, reject) {
-        return resolve(provider);
     });
 };
 
 ProviderSchema.methods.populatePublicOffers = function populatePublicOffers() {
-
+    // attach service to offers, too. name esp.
+    var provider = this;
+    return mongoose.model('Offer').find({
+        provider: this.id,
+        visibility: 'public'
+    }).populate('service').exec().then(function (offers) {
+        provider.offers = offers;
+        return provider;
+    });
 };
 
 /**
@@ -74,18 +76,14 @@ ProviderSchema.methods.show = function (user) {
         // Attach all this provider's offers.
         return provider.populateOffers().then(function (provider) {
             provider = provider.toObject();
-            provider.userIsAdmin = true;
             return provider;
         });
     } else {
-        // User isn't admin.
-        if (provider.visibility !== 'public') {
-            // Hide if not public
-            return Promise.cast(null);
-        } else {
-            // Attach public offers if public.
-            return provider.populatePublicOffers();
-        }
+        // User isn't admin. Show only public offers. Maybe paginate? Maybe active only?
+        return provider.populatePublicOffers().then(function (provider) {
+            provider = provider.toObject();
+            return provider;
+        });
     }
 };
 

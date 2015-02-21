@@ -34,18 +34,26 @@ var OfferSchema = Schema({
         type: String
     },
     provider: {
+        required: true,
         type: String,
         ref: 'Provider'
     },
     price: {
-        // From this list: http://openexchangerates.org/currencies.json. Don't enforce to any one as it may change. Maybe watch on input of new listings? TODO
+        // Should be from this list, but don't bother enforcing: http://openexchangerates.org/currencies.json
+        // Just deal with errors gracefully on the client side.
         currency: {
+            required: true,
             type: String
         },
         amount: {
+            required: true,
             type: Number,
             min: 0
         }
+    },
+    location: {
+        required: true,
+        type: String
     }
 }, {
     // False does not work when attempting to save documents. Bug in mongoose.
@@ -62,6 +70,8 @@ OfferSchema.methods.create = function () {
 
 OfferSchema.methods.show = function(user) {
     var offer = this;
+    // Attach service. Only really need the name. Also need the provider for 
+    
     if (offer.isAdministeredBy(user)) {
         // Show all to admin
         
