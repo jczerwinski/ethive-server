@@ -69,7 +69,14 @@ var ServiceSchema = Schema({
 	_id: true,
 	id: true,
 	toObject: {
-		//virtuals: true
+		virtuals: true,
+		// Warning: toObject should only ever be called after children are populated. 
+		transform: function transform (doc, ret, options) {
+			console.log(ret)
+			/*ret.children.forEach(function (child) {
+				delete child.children;
+			});*/
+		}
 	}
 });
 
@@ -92,14 +99,6 @@ ServiceSchema.virtual('parentId').set(function (parentId) {
 ServiceSchema.virtual('parentId').get(function () {
 	// Only attach parentId if parent isn't populated. See https://github.com/platanus/angular-restmod/issues/251
 	return typeof this.populated('parent') ? undefined : this.parent;
-});
-
-ServiceSchema.virtual('childrenIds').set(function (childrenIds) {
-	// noop! Children are managed through "parent" property, cannot be changed through children property 
-});
-
-ServiceSchema.virtual('childrenIds').get(function () {
-	return this.children && this.populated('children') ? this.parent.parentId : this.parent;
 });
 
 // Gives an index of all services. Indexed versions include _id, name, description, type, and children. Admins are shown only if user administers the service.

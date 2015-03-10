@@ -8,20 +8,15 @@ var fs = require('fs');
 var compress = require('koa-compress');
 var logger = require('koa-logger');
 var serve = require('koa-static');
-var router = require('koa-router');
 var koa = require('koa');
 var bodyParser = require('koa-body-parser');
 var path = require('path');
-
-var User = require('./api/User');
-var Service = require('./api/Service');
-var Provider = require('./api/Provider');
-
 var http = require('http');
 var https = require('https');
 var forceSSL = require('koa-force-ssl');
 
 var auth = require('./lib/auth');
+var api = require('api/api');
 
 
 var app = module.exports = koa();
@@ -34,42 +29,21 @@ app.use(function * (next) {
 		this.app.emit('error', err, this);
 	}
 });
-// Logger
+// Log
 app.use(logger());
 
-// Security
- 
+// Security - SSL? TODO.
 //app.use(forceSSL(config.app.https_port));
 
+// Parse
 app.use(bodyParser());
 
 // Auth
 app.use(auth.initialize());
 
-app.use(router(app));
-app
-	.post('/api/auth', auth)
-
-	// Services
-	.get('/api/services', Service.index)
-	.get('/api/services/:id', Service.show)
-	.post('/api/services', Service.create)
-	.put('/api/services/:id', Service.save)
-
-	// User
-	.get('/api/users', User.query)
-	.get('/api/users/:username', User.show)
-	.post('/api/users', User.save)
-	.get('/api/verifyEmail/:emailVerificationKey', User.verifyEmail)
-
-	// Provider
-	.post('/api/providers', Provider.create)
-	.get('/api/providers/:id', Provider.show)
-	.get('/api/providers/:providerID/offers/:offerID', Provider.offers.show)
-	.post('/api/providers/:providerID/offers', Provider.offers.create);
-
-// Serve static files
-app.use(serve(path.join(__dirname, 'webapp/app'))); // In development env... for now!
+// API
+app.use(api.routes());
+app.use(api.allowedMethods());
 
 // Compress
 app.use(compress());
