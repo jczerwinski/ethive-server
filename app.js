@@ -29,6 +29,7 @@ app.use(function * (next) {
 		this.app.emit('error', err, this);
 	}
 });
+
 // Log
 app.use(logger());
 
@@ -41,9 +42,12 @@ app.use(bodyParser());
 // Auth
 app.use(auth.initialize());
 
-// API
+// api
 app.use(api.routes());
 app.use(api.allowedMethods());
+
+// host static documentation -- assumes is pre-built
+app.use(serve('doc'));
 
 // Compress
 app.use(compress());
