@@ -44,7 +44,6 @@ app.use(auth.initialize());
 
 // api
 app.use(api.routes());
-app.use(api.allowedMethods());
 
 // host static documentation -- assumes is pre-built
 app.use(serve('doc'));
