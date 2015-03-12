@@ -9,7 +9,7 @@ var Provider = require('./Provider');
 module.exports = router;
 
 router
-    .post('/api/auth', auth)
+.post('/api/auth', auth)
 
 // Services
 .get('/api/services', Service.index)
@@ -32,7 +32,7 @@ router
 /**
  * @apiGroup Offers
  * @api {get} /offers/:id Get Offer
- * @apiName Get Offer
+ * @apiName Get Offer by ID
  * @apiDescription
  * Retrieve a single Offer by it's id.
  *
