@@ -72,7 +72,10 @@ var ServiceSchema = Schema({
 		virtuals: true,
 		// Warning: toObject should only ever be called after children are populated. 
 		transform: function transform (doc, ret, options) {
-			console.log(ret)
+			if (typeof ret.parent === 'string') {
+				ret.parentId = ret.parent;
+				delete ret.parent;
+			}
 			/*ret.children.forEach(function (child) {
 				delete child.children;
 			});*/
@@ -166,12 +169,18 @@ ServiceSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
 
 ServiceSchema.methods.showAdmin = function showAdmin() {
 	return this.populateChildren(true).then(function (service) {
+		service.children = service.children.map(function (child) {
+			return child.toObject();
+		});
 		return service.toObject();
 	});
 };
 
 ServiceSchema.methods.showPublic = function showPublic() {
 	return this.populateChildren().then(function (service) {
+		service.children = service.children.map(function (child) {
+			return child.toPublicObject();
+		});
 		return service.toPublicObject();
 	});
 };
