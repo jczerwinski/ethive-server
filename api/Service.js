@@ -60,6 +60,7 @@ Service.create = function * (next) {
 };
 
 Service.save = function * (next) {
+	var response = this;
 	var service = yield ServiceModel.findOneAsync({
 		_id: this.params.id
 	});
@@ -69,14 +70,15 @@ Service.save = function * (next) {
 		if (service.isAdministeredBy(this.user)) {
 			// Authorized. Let's do it.
 			service.set(this.req.body);
-			this.status = yield service.saveAsync().then(function(res) {
+			yield service.saveAsync().then(function(res) {
 				var product = res[0];
 				var changed = res[1];
 				// 200 OK if change successful. Something other than valaidation went wrong if not.
-				return changed ? 200 : 500;
+				response.status = changed ? 200 : 500;
 			}).catch(function(err) {
 				// Validation error
-				return 400;
+				response.status = 400;
+				response.body = err;
 			});
 			yield next;
 		} else {
