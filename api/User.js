@@ -53,9 +53,11 @@ User.show = function * (next) {
 };
 
 User.save = function * (next) {
+	var response = this;
 	var existingUser = yield UserModel.findOneAsync({_id: this.req.body._id});
 	if (existingUser) {
-		// Update
+		// Client error, bad request -- can't create existing user
+		return response.status = 400;
 	} else {
 		// Create
 		var user = new UserModel(this.req.body);
