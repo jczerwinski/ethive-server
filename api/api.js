@@ -12,6 +12,7 @@ router
 .post('/api/auth', auth)
 
 // Services
+// admins array is only attached to server response if user is an admin
 .get('/api/services', Service.index)
     .get('/api/services/:id', Service.show)
     .post('/api/services', Service.create)
