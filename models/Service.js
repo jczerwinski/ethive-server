@@ -19,26 +19,31 @@ var ServiceSchema = Schema({
 		type: String,
 		ref: 'Service',
 		// Need to ensure no cycles on parent, and that parent either exists or is null
-		validate: function (parentID, respond) {
-			var service = this;
-			if (parentID === null) {
-				// Null parent -- OK to add root level service.
-				respond(true);
+		validate: [
+			{
+				validator: function (parentID, respond) {
+					var service = this;
+					if (parentID === null) {
+						// Null parent -- OK to add root level service.
+						respond(true);
+					}
+					return this.constructor.findOneAsync({
+						_id: parentID
+					}).then(function (parent) {
+						if (parent) {
+							return parent.populateAncestors().then(function () {
+								// No cycles allowed.
+								return respond(!parent.hasAncestor(service));
+							})
+						} else {
+							// Parent does not exist. Not allowed.
+							return respond(false);
+						}
+					});
+				},
+				msg: 'cycle'
 			}
-			return this.constructor.findOneAsync({
-				_id: parentID
-			}).then(function (parent) {
-				if (parent) {
-					return parent.populateAncestors().then(function () {
-						// No cycles allowed.
-						return respond(!parent.hasAncestor(service));
-					})
-				} else {
-					// Parent does not exist. Not allowed.
-					return respond(false);
-				}
-			});
-		}
+		]
 	},
 	type: {
 		// Categories can have children, but not offers. Services can have offers, but not children.
@@ -70,7 +75,7 @@ var ServiceSchema = Schema({
 	id: true,
 	toObject: {
 		virtuals: true,
-		// Warning: toObject should only ever be called after children are populated. 
+		// Warning: toObject should only ever be called after children are populated.
 		transform: function transform (doc, ret, options) {
 			if (typeof ret.parent === 'string') {
 				ret.parentId = ret.parent;
@@ -130,7 +135,7 @@ ServiceSchema.methods.show = function show(user) {
 	//needs ancestors, children, offers. check if draft...
 	return this.populateAncestors().then(function () {
 		if (service.isAdministeredBy(user)) {
-			// Admin requesting service. 
+			// Admin requesting service.
 			return service.showAdmin();
 		}
 		// Not an admin
@@ -169,24 +174,28 @@ ServiceSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
 
 ServiceSchema.methods.showAdmin = function showAdmin() {
 	return this.populateChildren(true).then(function (service) {
-		service.children = service.children.map(function (child) {
-			return child.toObject();
-		});
+		if (service.children) {
+			service.children = service.children.map(function (child) {
+				return child.toObject();
+			});
+		}
 		return service.toObject();
 	});
 };
 
 ServiceSchema.methods.showPublic = function showPublic() {
 	return this.populateChildren().then(function (service) {
-		service.children = service.children.map(function (child) {
-			return child.toPublicObject();
-		});
+		if (service.children) {
+			service.children = service.children.map(function (child) {
+				return child.toPublicObject();
+			});
+		}
 		return service.toPublicObject();
 	});
 };
 
 /**
- * Assumes that the service consists of ancestors and one layer of children or 
+ * Assumes that the service consists of ancestors and one layer of children or
  * @return {[type]} [description]
  */
 ServiceSchema.methods.toPublicObject = function toPublicObject() {
