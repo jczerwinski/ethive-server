@@ -4,6 +4,7 @@ var crypto = require('crypto');
 var config = require('konfig')();
 var sendgrid = require('sendgrid')(config.keys.sendgrid.user, config.keys.sendgrid.pass);
 var Promise = require('bluebird');
+var servers = require('../lib/servers');
 
 Promise.promisifyAll(sendgrid);
 
@@ -99,7 +100,7 @@ UserSchema.methods.sendVerificationEmail = function sendVerificationEmail() {
 		from: 'info@ethive.com',
 		to: this.email,
 		subject: 'Welcome to Ethive!',
-		text: 'Please confirm. ' + 'https://localhost:3001/api/verifyEmail/' + this.emailVerificationKey // TODO
+		text: 'Please confirm. ' + servers.api + '/verifyEmail/' + this.emailVerificationKey
 	};
 	return sendgrid.sendAsync(mail);
 };

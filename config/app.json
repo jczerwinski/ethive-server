@@ -1,9 +1,22 @@
 {
-	"default": {
-		"http_port": 3000,
-		"mongodb": "mongodb://localhost/ethive"
-	},
-	"test": {
-		"mongodb": "mongodb://localhost/test"
+	"development": {
+		"servers": {
+			"web": {
+				"protocol": "http",
+				"domain": "localhost",
+				"port": 9000
+			},
+			"api": {
+				"protocol": "http",
+				"domain": "localhost",
+				"port": 3000,
+				"path": "/api"
+			},
+			"mongo": {
+				"protocol": "mongodb",
+				"domain": "localhost",
+				"path": "/ethive"
+			}
+		}
 	}
 }

@@ -1,3 +1,5 @@
+var servers = require('lib/servers');
+
 var UserModel = require('../models/User.js');
 
 var User = {};
@@ -82,9 +84,9 @@ User.verifyEmail = function * (next) {
 		return null;
 	});
 	if (user) {
-		this.redirect('/verifyEmailSuccess');
+		this.redirect(servers.web + '/verifyEmailSuccess');
 	} else {
-		this.redirect('/verifyEmailFailure');
+		this.redirect(servers.web + '/verifyEmailFailure');
 	}
 	this.status = 301;
 	yield next;
