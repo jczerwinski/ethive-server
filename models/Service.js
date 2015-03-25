@@ -245,8 +245,12 @@ ServiceSchema.methods.populateChildren = function populateChildren(admin) {
 			query.status = 'public';
 		}
 		return mongoose.model('Offer').findAsync(query).then(function (offers) {
-			service.offers = offers;
-			return service;
+			return Promise.map(offers, function (offer) {
+				return offer.populateAsync('provider', 'name _id');
+			}).then(function (offers){
+				service.offers = offers;
+				return service;
+			});
 		});
 	}
 	// Return the promise wrapped service by default
