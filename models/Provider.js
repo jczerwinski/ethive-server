@@ -37,6 +37,30 @@ ProviderSchema.pre('save', function (next) {
     this.offers = undefined;
     next();
 });
+
+/**
+ * Generates a plain-old javascript object from this Provider. The object generated is suitable for use and viewing by the given user.
+ *
+ * @param  {User} [user] The user making the request.
+ * @return {Promise} A promise that will be fulfilled with the requested Provider, or null if not authorized to view. Will be populated with offers.
+ */
+ProviderSchema.methods.show = function (user) {
+    var provider = this;
+    if (provider.isAdministeredBy(user)) {
+        // Attach all this provider's offers.
+        return provider.populateOffers().then(function (provider) {
+            provider = provider.toObject();
+            return provider;
+        });
+    } else {
+        // User isn't admin. Show only public offers. Maybe paginate? Maybe active only?
+        return provider.populatePublicOffers().then(function (provider) {
+            provider = provider.toObject();
+            return provider;
+        });
+    }
+};
+
 /**
  * [populateOffers description]
  * @return {[type]} [description]
@@ -62,29 +86,6 @@ ProviderSchema.methods.populatePublicOffers = function populatePublicOffers() {
         provider.offers = offers;
         return provider;
     });
-};
-
-/**
- * Generates a plain-old javascript object from this Provider. The object generated is suitable for use and viewing by the given user.
- *
- * @param  {User} user The user making the request, or undefined.
- * @return {Promise} A promise that will be fulfilled with the requested Provider, or null if not authorized to view. Will be populated with offers.
- */
-ProviderSchema.methods.show = function (user) {
-    var provider = this;
-    if (provider.isAdministeredBy(user)) {
-        // Attach all this provider's offers.
-        return provider.populateOffers().then(function (provider) {
-            provider = provider.toObject();
-            return provider;
-        });
-    } else {
-        // User isn't admin. Show only public offers. Maybe paginate? Maybe active only?
-        return provider.populatePublicOffers().then(function (provider) {
-            provider = provider.toObject();
-            return provider;
-        });
-    }
 };
 
 // Synchronous. Requires populated ancestors.
