@@ -74,17 +74,8 @@ var ServiceSchema = Schema({
 	_id: true,
 	id: true,
 	toObject: {
-		virtuals: true,
+		virtuals: true
 		// Warning: toObject should only ever be called after children are populated.
-		transform: function transform (doc, ret, options) {
-			if (typeof ret.parent === 'string') {
-				ret.parentId = ret.parent;
-				delete ret.parent;
-			}
-			/*ret.children.forEach(function (child) {
-				delete child.children;
-			});*/
-		}
 	}
 });
 

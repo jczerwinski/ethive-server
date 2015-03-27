@@ -51,7 +51,7 @@ Provider.show = function * (next) {
         // Found it!
         this.body = yield provider.show(this.user);
         // OK if something, unauthorized if not.
-        this.status = this.body ? 200 : 403; 
+        this.status = this.body ? 200 : 403;
     } else {
         // No such provider.
         this.status = 404;
@@ -85,7 +85,7 @@ Provider.offers.create = function * (next) {
         var offer = this.req.body;
 
         // Add the provider to the offer -- doesn't have to be provided on the object in requests through their providers
-        offer.provider = this.params.providerID; 
+        offer.provider = this.params.providerID;
 
         offer = new OfferModel(offer);
 

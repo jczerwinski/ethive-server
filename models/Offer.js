@@ -61,38 +61,68 @@ var OfferSchema = Schema({
 });
 
 /*OfferSchema.path('price').validate(function (value) {
-    
+
 }, 'Invalid currency');*/
 
 OfferSchema.methods.create = function () {
-    // Allows multiple offers per provider/service combo. This is to facilitate 
+    // Allows multiple offers per provider/service combo. This is to facilitate
 };
 
 OfferSchema.methods.show = function(user) {
     var offer = this;
-    // Attach service. Only really need the name. Also need the provider for 
-    
-    if (offer.isAdministeredBy(user)) {
-        // Show all to admin
-        
-    } else {
-        // User isn't admin.
-        if (offer.visibility === 'public') {
-            // Show public version if public.
+    // Attach service name, ID
+    // Attach provider
+    return offer.populateAsync('service provider').then(function (offer) {
+        return offer.service.populateAncestors();
+    }).then(function (service) {
+        if (offer.isAdministeredBy(user)) {
+            // Show all to admin
+            return offer.showAdmin();
         } else {
-            // Show nothing if not public
-            return Promise.cast(null);
+            // User isn't admin.
+            if (offer.isPublished()) {
+                // Show public version if public.
+                return offer.showPublic();
+            } else {
+                // Show nothing if not public
+                return null;
+            }
         }
-    }
+    });
+};
+
+OfferSchema.methods.showPublic = function () {
+    // Clean service, provider
+    this.service = this.service.toPublicObject();
+    this.provider = this.provider.toPublicObject();
+    return this;
+};
+
+OfferSchema.methods.showAdmin = function () {
+    // Clean service, provider -- no need for any sensitive data here.
+    this.service = this.service.toPublicObject();
+    this.provider = this.provider.toPublicObject();
+    return this;
 };
 
 // Synchronous. Requires populated ancestors.
 OfferSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
     if (!user) return false;
-    if (this.admins.some(function(admin) {
-        return admin === user._id;
-    })) return true;
+    if (this.service.isAdministeredBy(user)) {
+        return true;
+    }
+    if (this.provider.isAdministeredBy(user)) {
+        return true;
+    }
     return false;
+};
+
+/**
+ * Whether or not this offer is published. Requires that this offer's service be attached and published.
+ * @return {Boolean} Whether or not this offer is published.
+ */
+OfferSchema.methods.isPublished = function isPublished () {
+    return this.visibility === 'public' && this.service.isPublished && this.service.isPublished();
 };
 
 var OfferModel = mongoose.model('Offer', OfferSchema);

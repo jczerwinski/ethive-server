@@ -88,6 +88,12 @@ ProviderSchema.methods.populatePublicOffers = function populatePublicOffers() {
     });
 };
 
+ProviderSchema.methods.toPublicObject = function toPublicObject () {
+    var provider = this.toObject();
+    delete provider.admins;
+    return provider;
+};
+
 // Synchronous. Requires populated ancestors.
 ProviderSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
     if (!user) return false;

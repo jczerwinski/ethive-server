@@ -5,6 +5,7 @@ var auth = require('../lib/auth');
 var User = require('./User');
 var Service = require('./Service');
 var Provider = require('./Provider');
+var Offer = require('./Offer');
 
 module.exports = router;
 
@@ -27,7 +28,6 @@ router
 // Providers
 .post('/api/providers', Provider.create)
     .get('/api/providers/:id', Provider.show)
-    .get('/api/providers/:providerID/offers/:offerID', Provider.offers.show)
     .post('/api/providers/:providerID/offers', Provider.offers.create)
 
 /**
@@ -36,8 +36,6 @@ router
  * @apiName Get Offer by ID
  * @apiDescription
  * Retrieve a single Offer by it's id.
- *
- * Aliased by /providers/:providerID/offers/:offerID
  *
  * Retreived Offers include their Provider and Service inlined to allow for their easy display and retrieval.
  *
@@ -55,6 +53,4 @@ router
  *     }
  *   }
  */
-.get('api/offers/:id', function* (next) { // TODO
-    yield next;
-});
+.get('/api/offers/:id', Offer.show);
