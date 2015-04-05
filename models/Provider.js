@@ -55,8 +55,7 @@ ProviderSchema.methods.show = function (user) {
     } else {
         // User isn't admin. Show only public offers. Maybe paginate? Maybe active only?
         return provider.populatePublicOffers().then(function (provider) {
-            provider = provider.toObject();
-            return provider;
+            return provider.toPublicObject();
         });
     }
 };
@@ -67,6 +66,7 @@ ProviderSchema.methods.show = function (user) {
  */
 ProviderSchema.methods.populateOffers = function getOffers() {
     // attach service to offers, too. need name especially
+    // Do not attach offers for services that are not published
     var provider = this;
     return mongoose.model('Offer').find({
         provider: this.id
@@ -80,27 +80,46 @@ ProviderSchema.methods.populatePublicOffers = function populatePublicOffers() {
     // attach service to offers, too. name esp.
     var provider = this;
     return mongoose.model('Offer').find({
+        // Find all this provider's offers...
         provider: this.id,
-        visibility: 'public'
+        // that are public
+        status: 'public'
+    // populate the offer's services...
     }).populate('service').exec().then(function (offers) {
-        provider.offers = offers;
+        // and populate these serivces ancestors. We need this to check if the service is published.
+        return Promise.each(offers, function (offer) {
+            return offer.service.populateAncestors();
+        });
+    }).then(function (offers) {
+        // Remove offers for unpublished services
+        provider.offers = offers.filter(function (offer) {
+            return offer.service.isPublished();
+        });
         return provider;
     });
 };
 
+var Service = mongoose.model('Service');
+
+
 ProviderSchema.methods.toPublicObject = function toPublicObject () {
     var provider = this.toObject();
+    if (provider.offers) {
+        provider.offers = provider.offers.map(function (offer) {
+            offer.service = Service.Publify(offer.service);
+            return offer;
+        });
+    }
     delete provider.admins;
     return provider;
 };
 
 // Synchronous. Requires populated ancestors.
 ProviderSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
-    if (!user) return false;
-    if (this.admins.some(function (admin) {
-            return admin === user._id;
-        })) return true;
-    return false;
+    function isUser(admin) {
+        return admin === user._id;
+    }
+    return user ? this.admins.some(isUser) : false;
 };
 
 var ProviderModel = mongoose.model('Provider', ProviderSchema);

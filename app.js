@@ -1,10 +1,10 @@
 'use strict';
 var config = require('konfig')();
+
 var mongoose = require('mongoose');
 var servers = require('./lib/servers');
 mongoose.connect(servers.mongo);
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
-
 var fs = require('fs');
 var compress = require('koa-compress');
 var logger = require('koa-logger');

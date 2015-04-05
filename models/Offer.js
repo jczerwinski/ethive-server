@@ -17,6 +17,9 @@
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
+var mongooseTypes = require('mongoose-types');
+mongooseTypes.loadTypes(mongoose);
+var Url = mongoose.SchemaTypes.Url;
 var Promise = require('bluebird');
 
 var OfferSchema = Schema({
@@ -26,12 +29,17 @@ var OfferSchema = Schema({
         type: String,
         ref: 'Service'
     },
-    visibility: {
+    status: {
         type: String,
-        enum: ['public', 'draft']
+        enum: ['public', 'draft'],
+        required: true
     },
     description: {
         type: String
+    },
+    landing: {
+        type: Url,
+        required: true
     },
     provider: {
         required: true,
@@ -122,7 +130,7 @@ OfferSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
  * @return {Boolean} Whether or not this offer is published.
  */
 OfferSchema.methods.isPublished = function isPublished () {
-    return this.visibility === 'public' && this.service.isPublished && this.service.isPublished();
+    return this.status === 'public' && this.service.isPublished && this.service.isPublished();
 };
 
 var OfferModel = mongoose.model('Offer', OfferSchema);

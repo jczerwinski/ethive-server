@@ -187,24 +187,27 @@ ServiceSchema.methods.showPublic = function showPublic() {
 
 /**
  * Assumes that the service consists of ancestors and one layer of children or
+ * @instance
+ * @method
  * @return {[type]} [description]
  */
 ServiceSchema.methods.toPublicObject = function toPublicObject() {
-	if (this.parent && this.parent.toPublicObject) {
-		this.parent = this.parent.toPublicObject();
+	return ServiceSchema.statics.Publify(this.toObject());
+};
+
+/**
+ * Takes a POJO Service and removes sensitive information.
+ * @static@method
+ * @param  {[type]} service [description]
+ * @return {[type]}         [description]
+ */
+ServiceSchema.statics.Publify = function Publify (service) {
+	if (service.parent) {
+		service.parent = ServiceSchema.statics.Publify(service.parent);
 	}
-	/*if (this.children) {
-		this.children = this.children.map(function (child) {
-			return child.toObject();
-		});
+	if (service.admins) {
+		delete service.admins;
 	}
-	if (this.offers) {
-		this.offers = this.offers.map(function (offer) {
-			return offer.toObject();
-		});
-	}*/
-	var service = this.toObject();
-	delete service.admins;
 	return service;
 };
 
