@@ -15,3 +15,19 @@ Offer.show = function * (next) {
 	}
 	yield next;
 };
+
+Offer.save = function * (next) {
+	var offer = yield OfferModel.FindAndPopulate(this.params.id);
+	if (offer) {
+		if (offer.isAdministeredBy(this.user)) {
+			offer.set(this.req.body);
+			yield offer.save();
+			this.status = 200;
+		} else {
+			this.status = 403;
+		}
+	} else {
+		this.status = 403;
+	}
+	yield next;
+};

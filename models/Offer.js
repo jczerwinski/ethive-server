@@ -23,114 +23,127 @@ var Url = mongoose.SchemaTypes.Url;
 var Promise = require('bluebird');
 
 var OfferSchema = Schema({
-    // Auto gen _id
-    service: {
-        required: true,
-        type: String,
-        ref: 'Service'
-    },
-    status: {
-        type: String,
-        enum: ['public', 'draft'],
-        required: true
-    },
-    description: {
-        type: String
-    },
-    landing: {
-        type: Url,
-        required: true
-    },
-    provider: {
-        required: true,
-        type: String,
-        ref: 'Provider'
-    },
-    price: {
-        // Should be from this list, but don't bother enforcing: http://openexchangerates.org/currencies.json
-        // Just deal with errors gracefully on the client side.
-        currency: {
-            required: true,
-            type: String
-        },
-        amount: {
-            required: true,
-            type: Number,
-            min: 0
-        }
-    },
-    location: {
-        required: true,
-        type: String
-    }
+	// Auto gen _id
+	service: {
+		required: true,
+		type: String,
+		ref: 'Service'
+	},
+	status: {
+		type: String,
+		enum: ['public', 'draft'],
+		required: true
+	},
+	description: {
+		type: String
+	},
+	landing: {
+		type: Url,
+		required: true
+	},
+	provider: {
+		required: true,
+		type: String,
+		ref: 'Provider'
+	},
+	price: {
+		// Should be from this list, but don't bother enforcing: http://openexchangerates.org/currencies.json
+		// Just deal with errors gracefully on the client side.
+		currency: {
+			required: true,
+			type: String
+		},
+		amount: {
+			required: true,
+			type: Number,
+			min: 0
+		}
+	},
+	location: {
+		required: true,
+		type: String
+	}
 }, {
-    // False does not work when attempting to save documents. Bug in mongoose.
-    _id: true
+	// False does not work when attempting to save documents. Bug in mongoose.
+	_id: true
 });
 
 /*OfferSchema.path('price').validate(function (value) {
 
 }, 'Invalid currency');*/
 
-OfferSchema.methods.create = function () {
-    // Allows multiple offers per provider/service combo. This is to facilitate
+OfferSchema.statics.FindAndPopulate = function (id) {
+	return this.findOneAsync({
+		_id: id
+	}).then(function (offer) {
+		return offer.populateAsync('service provider');
+	}).then(function (offer) {
+		return offer.service.populateAncestors().then(function () {
+			return offer;
+		});
+	});
 };
 
-OfferSchema.methods.show = function(user) {
-    var offer = this;
-    // Attach service name, ID
-    // Attach provider
-    return offer.populateAsync('service provider').then(function (offer) {
-        return offer.service.populateAncestors();
-    }).then(function (service) {
-        if (offer.isAdministeredBy(user)) {
-            // Show all to admin
-            return offer.showAdmin();
-        } else {
-            // User isn't admin.
-            if (offer.isPublished()) {
-                // Show public version if public.
-                return offer.showPublic();
-            } else {
-                // Show nothing if not public
-                return null;
-            }
-        }
-    });
+OfferSchema.methods.create = function () {
+	// Allows multiple offers per provider/service combo. This is to facilitate
 };
+
+OfferSchema.methods.show = function (user) {
+	var offer = this;
+	// Attach service name, ID
+	// Attach provider
+	return offer.populateAsync('service provider').then(function (offer) {
+		return offer.service.populateAncestors();
+	}).then(function (service) {
+		if (offer.isAdministeredBy(user)) {
+			// Show all to admin
+			return offer.showAdmin();
+		} else {
+			// User isn't admin.
+			return offer.showPublic();
+		};
+	});
+};
+
+var Service = mongoose.model('Service');
+var Provider = mongoose.model('Provider');
 
 OfferSchema.methods.showPublic = function () {
-    // Clean service, provider
-    this.service = this.service.toPublicObject();
-    this.provider = this.provider.toPublicObject();
-    return this;
+	if (offer.isPublished()) {
+		// Clean service, provider
+		var offer = this.toObject();
+		offer.service = Service.Publify(offer.service);
+		offer.provider = Provider.Publify(offer.provider);
+		return offer;
+	} else {
+		// Show nothing if not published
+		return null;
+	}
 };
 
 OfferSchema.methods.showAdmin = function () {
-    // Clean service, provider -- no need for any sensitive data here.
-    this.service = this.service.toPublicObject();
-    this.provider = this.provider.toPublicObject();
-    return this;
+	// Provider's admins needed
+	return this.toObject();
 };
 
 // Synchronous. Requires populated ancestors.
 OfferSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
-    if (!user) return false;
-    if (this.service.isAdministeredBy(user)) {
-        return true;
-    }
-    if (this.provider.isAdministeredBy(user)) {
-        return true;
-    }
-    return false;
+	if (!user) return false;
+	if (this.service.isAdministeredBy(user)) {
+		return true;
+	}
+	if (this.provider.isAdministeredBy(user)) {
+		return true;
+	}
+	return false;
 };
 
 /**
  * Whether or not this offer is published. Requires that this offer's service be attached and published.
  * @return {Boolean} Whether or not this offer is published.
  */
-OfferSchema.methods.isPublished = function isPublished () {
-    return this.status === 'public' && this.service.isPublished && this.service.isPublished();
+OfferSchema.methods.isPublished = function isPublished() {
+	return this.status === 'public' && this.service.isPublished && this.service.isPublished();
 };
 
 var OfferModel = mongoose.model('Offer', OfferSchema);

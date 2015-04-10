@@ -53,4 +53,5 @@ router
  *     }
  *   }
  */
-.get('/api/offers/:id', Offer.show);
+.get('/api/offers/:id', Offer.show)
+.put('/api/offers/:id', Offer.save);
