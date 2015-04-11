@@ -60,6 +60,16 @@ ProviderSchema.methods.show = function (user) {
 	}
 };
 
+ProviderSchema.methods.delete = function () {
+	var provider = this;
+	// Find and delete everything owned by this provider
+	// Offers
+	return mongoose.model('Offer').removeAsync({provider: this._id}).then(function () {
+		// That's it. Delete the Provider
+		return provider.removeAsync();
+	});
+};
+
 /**
  * [populateOffers description]
  * @return {[type]} [description]

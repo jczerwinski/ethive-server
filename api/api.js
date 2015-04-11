@@ -29,6 +29,7 @@ router
 .post('/api/providers', Provider.create)
     .get('/api/providers/:id', Provider.show)
     .post('/api/providers/:providerID/offers', Provider.offers.create)
+    .delete('/api/providers/:id', Provider.delete)
 
 /**
  * @apiGroup Offers
@@ -54,4 +55,5 @@ router
  *   }
  */
 .get('/api/offers/:id', Offer.show)
-.put('/api/offers/:id', Offer.save);
+.put('/api/offers/:id', Offer.save)
+.delete('/api/offers/:id', Offer.delete);
