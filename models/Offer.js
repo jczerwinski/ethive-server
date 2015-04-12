@@ -109,7 +109,7 @@ var Service = mongoose.model('Service');
 var Provider = mongoose.model('Provider');
 
 OfferSchema.methods.showPublic = function () {
-	if (offer.isPublished()) {
+	if (this.isPublished()) {
 		// Clean service, provider
 		var offer = this.toObject();
 		offer.service = Service.Publify(offer.service);
