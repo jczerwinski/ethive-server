@@ -1,4 +1,5 @@
 var servers = require('lib/servers');
+var config = require('konfig')();
 
 var UserModel = require('../models/User.js');
 
@@ -37,11 +38,12 @@ User.query = function * (next) {
  */
 User.show = function * (next) {
 	// Users can only see their own account. User accounts are private.
-	var user = yield UserModel.findOneAsync({_id: this.params.username});
+	var user = yield UserModel.findOneAsync({username: this.params.username});
 	if (user) {
 		if (this.user) {
 			// User found. Requestor logged in.
 			this.body = yield user.show(this.user);
+			setAdmin(this.body);
 			this.status = this.body ? 200 : 403;
 		} else {
 			// Not logged in.
@@ -54,9 +56,20 @@ User.show = function * (next) {
 	yield next;
 };
 
+function setAdmin (user) {
+	if (user &&
+		user.username &&
+		Array.isArray(config.app.admins) &&
+		config.app.admins.some(function (admin) {
+			return admin === user.username;
+		})) {
+			user.isAdmin = true;
+		}
+}
+
 User.save = function * (next) {
 	var response = this;
-	var existingUser = yield UserModel.findOneAsync({_id: this.req.body._id});
+	var existingUser = yield UserModel.findOneAsync({username: this.req.body.username});
 	if (existingUser) {
 		// Client error, bad request -- can't create existing user
 		return response.status = 400;

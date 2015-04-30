@@ -2,7 +2,7 @@ var ServiceModel = require('../models/Service.js');
 
 /**
  * Services comprise a forest. API Output is always in the form:
- * 
+ *
  *   {
  *     // attributes
  *     parent: {} // Full blown service, all the way up to the root.
@@ -32,7 +32,7 @@ Service.index = function * (next) {
  */
 Service.show = function * (next) {
 	var service = yield ServiceModel.findOneAsync({
-		_id: this.params.id
+		id: this.params.id
 	});
 	if (!service) {
 		// No such service
@@ -46,30 +46,47 @@ Service.show = function * (next) {
 };
 
 Service.create = function * (next) {
-	// Create
-	var service = new ServiceModel(this.req.body);
-	yield service.populateAncestors();
-	if (service.isAdministeredBy(this.user)) {
-		// TODO still need to validate parent field, admins?
-		service = yield service.saveAsync();
-		this.status = 200;
-	} else {
+	var service = yield ServiceModel.findOneAsync({
+		id: this.req.body.id
+	});
+	if (service) {
+		// Do not overwrite
 		this.status = 403;
+	} else {
+		// Create
+		// Prep document
+		var service = this.req.body;
+		service.parent = yield ServiceModel.TranslateId(service.parentId);
+		service.admins = [this.user._id];
+		service = new ServiceModel(service);
+		yield service.populateAncestors();
+		if (service.isAdministeredBy(this.user)) {
+			// TODO still need to validate parent field, admins?
+			service = yield service.saveAsync();
+			this.status = 200;
+		} else {
+			// Not authorized
+			this.status = 403;
+		}
 	}
 	yield next;
 };
 
+
 Service.save = function * (next) {
 	var response = this;
 	var service = yield ServiceModel.findOneAsync({
-		_id: this.params.id
+		id: this.params.id
 	});
 	if (service) {
 		// If the service exists, update it.
 		yield service.populateAncestors();
 		if (service.isAdministeredBy(this.user)) {
-			// Authorized. Let's do it.
-			service.set(this.req.body);
+			// Authorized to save
+			// Prep updates
+			var updates = this.req.body;
+			updates.parent = yield ServiceModel.TranslateId(updates.parent);
+			service.set(updates);
 			yield service.saveAsync().then(function(res) {
 				var product = res[0];
 				var changed = res[1];

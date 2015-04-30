@@ -3,12 +3,16 @@ var Schema = mongoose.Schema;
 var Promise = require('bluebird');
 var promiseWhile = require('../lib/promiseWhile.js');
 
+var config = require('konfig')();
+
+var ObjectId = mongoose.SchemaTypes.ObjectId;
+
 var ServiceSchema = Schema({
 	name: {
 		type: String,
 		required: true
 	},
-	_id: {
+	id: {
 		type: String,
 		required: true,
 		lowercase: true,
@@ -16,23 +20,29 @@ var ServiceSchema = Schema({
 		match: /^[a-z0-9-]{1,}$/
 	},
 	parent: {
-		type: String,
+		type: Schema.Types.ObjectId,
 		ref: 'Service',
 		// Need to ensure no cycles on parent, and that parent either exists or is null
 		validate: [
 			{
 				validator: function (parentID, respond) {
+					// TODO Pre-validate hook to ensure that parentID's set as String id or Service Object are first translated to the proper ObjectId _id. We can then assume that _id is either null or an ObjectId
+					// Parent ID could be null or ObjectId
 					var service = this;
+					// Allow root level services
 					if (parentID === null) {
-						// Null parent -- OK to add root level service.
 						respond(true);
+					}
+					// Disallow false/not found results from TranslateId
+					if (parentID === false) {
+						respond(false);
 					}
 					return this.constructor.findOneAsync({
 						_id: parentID
 					}).then(function (parent) {
 						if (parent) {
 							return parent.populateAncestors().then(function () {
-								// No cycles allowed.
+								// Cycle detected. Not allowed.
 								return respond(!parent.hasAncestor(service));
 							})
 						} else {
@@ -63,38 +73,52 @@ var ServiceSchema = Schema({
 		type: String
 	},
 	admins: {
-		type: [String],
-		ref: 'User'
-	},
-	// Not to be saved to DB. Only here to allow for population without needing to store references necessarily
-	children: {},
-	offers: {}
+		type: [{
+			type: ObjectId,
+			ref: 'User'
+		}]
+	}
 }, {
-	// False does not work when attempting to save documents. Bug in mongoose.
-	_id: true,
-	id: true,
 	toObject: {
 		virtuals: true
 		// Warning: toObject should only ever be called after children are populated.
 	}
 });
 
+/**
+ * Translate a String id to an ObjectId _id.
+ * @param {String} id Service id
+ * @return {ObjectId} Service _id, or undefined
+ */
+ServiceSchema.statics.TranslateId = function TranslateId (id) {
+	// Allow root level services
+	if (id === null) {
+		return Promise(null);
+	}
+	return this.findOneAsync({id: id}, '_id', {lean: true}).then(function (service) {
+		return service ? service._id : false;
+	});
+};
+
 var EXCLUDE_PRIVATE_SELECT_STRING = '-admins'
 
-// Ensure children and offers are not set on saved services. They should be dynamically generated. TODO  Move to object definition?
-ServiceSchema.pre('save', function (next) {
-	// Only persist parent ID to db
-	this.parent = this.parent && this.parent._id ? this.parent._id : this.parent;
-	this.children = undefined;
-	this.offers = undefined;
-	next();
+ServiceSchema.virtual('children').set(function (children) {
+	this.__children = children;
+});
+
+ServiceSchema.virtual('children').get(function () {
+	return this.__children;
+});
+
+ServiceSchema.virtual('offers').set(function (offers) {
+	this.__offers = offers;
+});
+
+ServiceSchema.virtual('offers').get(function () {
+	return this.__offers;
 });
 
 // Stopgap to support angular-restmod on the client. restmod requires populated fields and references to have different names. Should be fixed soon. See https://github.com/platanus/angular-restmod/issues/251
-ServiceSchema.virtual('parentId').set(function (parentId) {
-	this.parent = parentId;
-});
-
 ServiceSchema.virtual('parentId').get(function () {
 	// Only attach parentId if parent isn't populated. See https://github.com/platanus/angular-restmod/issues/251
 	return typeof this.populated('parent') ? undefined : this.parent;
@@ -157,10 +181,17 @@ ServiceSchema.methods.populateAncestors = function populateAncestors() {
 // Synchronous. Requires populated ancestors first.
 ServiceSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
 	if (!user) return false;
-	if (this.admins.some(function (admin) {
-			return admin === user._id;
-		})) return true;
+	// Global admin
+	if (config.app.admins.some(function (admin) {
+		return admin === user._id;
+	})) {
+		return true;
+	}
+	if (this.admins.some(isUser)) return true;
 	return this.parent ? this.parent.isAdministeredBy(user) : false;
+	function isUser (admin) {
+		return admin.toString() === user._id;
+	}
 };
 
 ServiceSchema.methods.showAdmin = function showAdmin() {
@@ -218,7 +249,7 @@ ServiceSchema.methods.populateChildren = function populateChildren(admin) {
 	var service = this;
 	if (this.type === 'category') {
 		var query = {
-			parent: this.id
+			parent: this._id
 		};
 		var select = '';
 		if (!admin) {
@@ -233,14 +264,14 @@ ServiceSchema.methods.populateChildren = function populateChildren(admin) {
 	if (this.type === 'service') {
 		// Service admins _can_ see  draft services. For support purposes.
 		var query = {
-			service: this.id
+			service: this._id
 		};
 		if (!admin) {
 			query.status = 'public';
 		}
 		return mongoose.model('Offer').findAsync(query).then(function (offers) {
 			return Promise.map(offers, function (offer) {
-				return offer.populateAsync('provider', 'name _id');
+				return offer.populateAsync('provider', 'name id');
 			}).then(function (offers){
 				service.offers = offers;
 				return service;
@@ -265,14 +296,11 @@ ServiceSchema.methods.isPublished = function isPublished() {
 
 // Requires populateAncestors first
 ServiceSchema.methods.hasAncestor = function hasAncestor(ancestor) {
-	if (this.parent) {
-		if (this.parent._id === (ancestor._id || ancestor)) {
-			return true
-		}
-		return this.parent.hasAncestor(ancestor);
-	} else {
-		return false;
+	if (!this.parent) return false;
+	if (this.parent._id === (ancestor._id || ancestor)) {
+		return true
 	}
+	return this.parent.hasAncestor(ancestor);
 };
 
 

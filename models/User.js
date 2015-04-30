@@ -23,7 +23,7 @@ function generateVerificationKey() {
 }
 
 var UserSchema = mongoose.Schema({
-	_id: {
+	username: {
 		type: String,
 		match: /^[a-zA-Z0-9_.]{3,20}$/,
 		required: true,
@@ -64,22 +64,17 @@ var UserSchema = mongoose.Schema({
 	},
 	// Should not be persisted. Temp only.
 	providers: {}
-}, {
-	// False does not work when attempting to save documents. Bug in mongoose.
-	_id: true
 });
+
+UserSchema.statics.TranslateId = function TranslateId (id) {
+	return this.findOneAsync({username: id}, '_id', {lean: true}).then(function (user) {
+		return user ? user._id : null;
+	});
+};
 
 UserSchema.pre('save', function (next) {
 	this.providers = undefined;
 	next();
-});
-
-UserSchema.virtual('username').get(function () {
-	return this._id;
-});
-
-UserSchema.virtual('username').set(function(username) {
-	this._id = username;
 });
 
 UserSchema.methods.isBruteForcing = function isBruteForcing() {
@@ -110,7 +105,7 @@ UserSchema.methods.isVerified = function isVerified() {
 };
 
 UserSchema.methods.show = function show (user) {
-	if (user._id === this._id) {
+	if (user.username === this.username) {
 		// User wants his own account. Give everything.
 		var thisUser = this;
 		return mongoose.model('Provider').findAsync({

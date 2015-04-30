@@ -7,8 +7,8 @@ Offer.show = function * (next) {
 	if (!offer) {
 		this.status = 404;
 	} else {
-		this.status = 200;
 		this.body = yield offer.show(this.user);
+		this.status = 200;
 	}
 	yield next;
 };
@@ -17,9 +17,11 @@ Offer.save = function * (next) {
 	var offer = yield OfferModel.FindAndPopulate(this.params.id);
 	if (offer) {
 		if (offer.isAdministeredBy(this.user)) {
-			offer.set(this.req.body);
+			yield offer.update(this.req.body)
+			status = 204;
+			/*offer.set(this.req.body);
 			yield offer.save();
-			this.status = 204;
+			this.status = 204;*/
 		} else {
 			this.status = 403;
 		}

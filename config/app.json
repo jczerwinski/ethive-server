@@ -17,6 +17,7 @@
 				"domain": "localhost",
 				"path": "/ethive"
 			}
-		}
+		},
+		"admins": ["5535b06374b88a6f35dcca3b"]
 	}
 }

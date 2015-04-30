@@ -1,19 +1,18 @@
 /**
- * Design note: A given provider can have multiple offers for the "same" configuration. This is easier to enforce and lets us be liberal in adding details to offers while not worrying too much if they are "duplicates" of each other. Less constraining in general. The drawback is that suppliers could "spam" the market. This can be prevented by collapsing all of a given provider's offers into a single view so as to prevent such spam.
+ * @overview Offer Model
  *
- * Prime use cases: find all offers for a provider.
+ * Offers belong to both a Service and a Provider.
  *
- *      - Find all offers for a service
- *          - Sort, datatable view, batch editing? etc.
- *      - Find all offers for a service by location
- *      - Essentially lots of queries on offers
+ * A Provider can have multiple Offers per  Service. This risks Providers spamming Services with Offers. This can be prevented by collapsing each Provider's Offers for a Service into a single view.
  *
- * Some design constraints:
- *     - Don't want to reference offers from Services or Providers -- the set of offers could be much too big!
- *     - Must reference, and should probably index Service from/on Offers, for queries.
- *     - Service ID's are already guaranteed to be immutable, so it supports this.
  *
+ * _id and id should be equal. For Offers, supporting a human-readable, url compatible String identifier doesn't add value.
+ *
+ * Don't reference Offers from Services or Providers -- the set of offers could be way too big.
+ *
+ * @todo  Index Offers heavily to support Location/Service queries.
  */
+
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
@@ -26,7 +25,7 @@ var OfferSchema = Schema({
 	// Auto gen _id
 	service: {
 		required: true,
-		type: String,
+		type: Schema.Types.ObjectId,
 		ref: 'Service'
 	},
 	status: {
@@ -43,7 +42,7 @@ var OfferSchema = Schema({
 	},
 	provider: {
 		required: true,
-		type: String,
+		type: Schema.Types.ObjectId,
 		ref: 'Provider'
 	},
 	price: {
@@ -64,31 +63,81 @@ var OfferSchema = Schema({
 		type: String
 	}
 }, {
-	// False does not work when attempting to save documents. Bug in mongoose.
-	_id: true
+	id: true,
+	toObject: {
+		getters: true
+	}
 });
 
-/*OfferSchema.path('price').validate(function (value) {
+var Service = mongoose.model('Service');
+var Provider = mongoose.model('Provider');
 
-}, 'Invalid currency');*/
+/**
+ *
+ * Public API
+ *
+ */
 
-OfferSchema.statics.FindAndPopulate = function (id) {
+/**
+ * Whether or not this Offer is administered by the given user. Offer's Service and Provider must first be populated, otherwise defaults to false.
+ * @param  {User}  user The user to check for permissions
+ * @return {Boolean}
+ * @public
+ */
+OfferSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
+	if (!user) return false;
+	if (this.service.isAdministeredBy(user)) {
+		return true;
+	}
+	if (this.provider.isAdministeredBy(user)) {
+		return true;
+	}
+	return false;
+};
+
+/**
+ * Update this Offer. Expects POJO HTTP request body. Translates ids to _ids.
+ *
+ * @param {Object} updates       POJO HTTP request body of an Offer/patch
+ * @yield {Promise} Whatever Mongoose save() returns
+ * @public
+ * @instance
+ */
+OfferSchema.methods.update = function * updates (updates) {
+	// Fix service
+	if (updates.service) {
+		updates.service = yield Service.TranslateId(updates.service);
+	}
+	// Fix provider
+	if (updates.provider) {
+		updates.provider = yield Provider.TranslateId(updates.provider);
+	}
+	this.set(updates);
+	yield this.save();
+};
+
+
+/**
+ * Find an Offer by _id/id and populate its Service heirarchy and Provider
+ * @param {String|ObjectId} An Offer's _id/id
+ * @return {Promise} The Offer, or null if not found
+ * @public
+ * @static
+ */
+OfferSchema.statics.FindAndPopulate = function FindAndPopulate (_id) {
 	return this.findOneAsync({
-		_id: id
+		_id: _id
 	}).then(function (offer) {
-		return offer.populateAsync('service provider');
-	}).then(function (offer) {
-		return offer.service.populateAncestors().then(function () {
-			return offer;
+		if (!offer) return null;
+		return offer.populateAsync('service provider').then(function (offer) {
+			return offer.service.populateAncestors().then(function () {
+				return offer;
+			});
 		});
 	});
 };
 
-OfferSchema.methods.create = function () {
-	// Allows multiple offers per provider/service combo. This is to facilitate
-};
-
-OfferSchema.methods.show = function (user) {
+OfferSchema.methods.show = function show (user) {
 	var offer = this;
 	// Attach service name, ID
 	// Attach provider
@@ -105,10 +154,13 @@ OfferSchema.methods.show = function (user) {
 	});
 };
 
-var Service = mongoose.model('Service');
-var Provider = mongoose.model('Provider');
+/**
+ *
+ * Private
+ *
+ */
 
-OfferSchema.methods.showPublic = function () {
+OfferSchema.methods.showPublic = function showPublic () {
 	if (this.isPublished()) {
 		// Clean service, provider
 		var offer = this.toObject();
@@ -121,21 +173,9 @@ OfferSchema.methods.showPublic = function () {
 	}
 };
 
-OfferSchema.methods.showAdmin = function () {
+OfferSchema.methods.showAdmin = function showAdmin () {
 	// Provider's admins needed
 	return this.toObject();
-};
-
-// Synchronous. Requires populated ancestors.
-OfferSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
-	if (!user) return false;
-	if (this.service.isAdministeredBy(user)) {
-		return true;
-	}
-	if (this.provider.isAdministeredBy(user)) {
-		return true;
-	}
-	return false;
 };
 
 /**
@@ -145,6 +185,10 @@ OfferSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
 OfferSchema.methods.isPublished = function isPublished() {
 	return this.status === 'public' && this.service.isPublished && this.service.isPublished();
 };
+
+/**
+ * TODO: Validate Price -- Two validators? One for currency, one for amount? Maybe only one for currency since amount is automatic?
+ */
 
 var OfferModel = mongoose.model('Offer', OfferSchema);
 Promise.promisifyAll(OfferModel);

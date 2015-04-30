@@ -28,6 +28,7 @@ router
 // Providers
 .post('/api/providers', Provider.create)
     .get('/api/providers/:id', Provider.show)
+    .put('/api/providers/:id', Provider.update)
     .post('/api/providers/:providerID/offers', Provider.offers.create)
     .delete('/api/providers/:id', Provider.delete)
 
