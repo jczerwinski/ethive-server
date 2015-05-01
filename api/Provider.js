@@ -128,14 +128,11 @@ Provider.offers.create = function* (next) {
 		// Add the provider to the offer -- doesn't have to be provided on the object in requests through their providers
 		offer.provider = provider._id;
 		offer.service = yield ServiceModel.TranslateId(offer.service);
-		offer = new OfferModel(offer);
 
 		var ctx = this;
-		yield offer.saveAsync().then(function (offer) {
-			// Creation successful!
+		yield OfferModel.createAsync(offer).then(function (offer) {
+			ctx.body = offer.toObject();
 			ctx.status = 201;
-			ctx.body = offer;
-			return 201;
 		}).catch(function (err) {
 			ctx.status = Responder.save.failure.status(err);
 		});

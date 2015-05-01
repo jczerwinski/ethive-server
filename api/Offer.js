@@ -18,10 +18,7 @@ Offer.save = function * (next) {
 	if (offer) {
 		if (offer.isAdministeredBy(this.user)) {
 			yield offer.update(this.req.body)
-			status = 204;
-			/*offer.set(this.req.body);
-			yield offer.save();
-			this.status = 204;*/
+			this.status = 204;
 		} else {
 			this.status = 403;
 		}
