@@ -122,20 +122,22 @@ Provider.offers.create = function* (next) {
 		id: this.params.providerID
 	});
 	if (provider) {
-		// Create
-		var offer = this.req.body;
-
-		// Add the provider to the offer -- doesn't have to be provided on the object in requests through their providers
-		offer.provider = provider._id;
-		offer.service = yield ServiceModel.TranslateId(offer.service);
-
-		var ctx = this;
-		yield OfferModel.createAsync(offer).then(function (offer) {
-			ctx.body = offer.toObject();
-			ctx.status = 201;
-		}).catch(function (err) {
-			ctx.status = Responder.save.failure.status(err);
-		});
+		if (provider.isAdministeredBy(this.user)) {
+			// Create
+			var offer = this.req.body;
+			// Add the provider to the offer -- doesn't have to be provided on the object in requests through their providers
+			offer.provider = provider._id;
+			offer.service = yield ServiceModel.TranslateId(offer.service);
+			var ctx = this;
+			yield OfferModel.createAsync(offer).then(function (offer) {
+				ctx.body = offer.toObject();
+				ctx.status = 201;
+			}).catch(function (err) {
+				ctx.status = Responder.save.failure.status(err);
+			});
+		} else {
+			this.status = 403;
+		}
 	} else {
 		// Provider not found
 		this.status = 404;

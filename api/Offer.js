@@ -21,7 +21,8 @@ Offer.save = function * (next) {
 			yield offer.update(this.req.body)
 			this.status = 204;
 		} else {
-			this.status = 403;
+			// Not authorized. Hide from non-admins -- not found.
+			this.status = 404;
 		}
 	} else {
 		this.status = 404;
@@ -36,7 +37,8 @@ Offer.delete = function * (next) {
 			yield offer.remove();
 			this.status = 204;
 		} else {
-			this.status = 403;
+			// Not authorized. Hide from non-admins -- not found.
+			this.status = 404;
 		}
 	} else {
 		this.status = 404;
