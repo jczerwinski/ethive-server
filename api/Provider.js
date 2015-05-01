@@ -101,21 +101,6 @@ Provider.delete = function* (next) {
 };
 
 Provider.offers = {};
-Provider.offers.show = function* (next) {
-	this.status = 404;
-	/*var provider = providersHash[this.params.providerID];
-	if (!provider) {
-	    this.throw('Cannot find provider', 404);
-	}
-	var offer = provider.offers.find(function (offer) {
-	    return offer.id == this.params.offerID;
-	}, this);
-	if (!offer) {
-	    this.throw(404);
-	}
-	this.body = offer;
-	yield next;*/
-};
 
 Provider.offers.create = function* (next) {
 	var provider = yield ProviderModel.findOneAsync({
