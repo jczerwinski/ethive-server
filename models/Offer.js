@@ -175,7 +175,10 @@ OfferSchema.methods.showPublic = function showPublic () {
 
 OfferSchema.methods.showAdmin = function showAdmin () {
 	// Provider's admins needed
-	return this.toObject();
+	var offer = this;
+	return this.provider.populateAdmins().then(function () {
+		return offer.toObject();
+	});
 };
 
 /**
