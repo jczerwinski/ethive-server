@@ -1,8 +1,8 @@
 {
     "default": {
         "sendgrid": {
-            "user": "jczerwinski",
-            "pass": "lEZ26dpkgohILZgnxf3Z"
+            "user": "ethive-dev",
+            "pass": "SG.uEIIRdoOSkifeWuv6U0uGw.4H3dZFiIfDe19ejQLU-GIXQs"
         }
     }
 }
