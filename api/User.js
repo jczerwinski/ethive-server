@@ -1,4 +1,4 @@
-var servers = require('lib/servers');
+var servers = require('../lib/servers');
 var config = require('konfig')();
 
 var UserModel = require('../models/User.js');

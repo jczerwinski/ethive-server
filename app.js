@@ -17,7 +17,7 @@ var https = require('https');
 var forceSSL = require('koa-force-ssl');
 
 var auth = require('./lib/auth');
-var api = require('api/api');
+var api = require('./api/api');
 
 
 var app = module.exports = koa();
