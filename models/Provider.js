@@ -228,8 +228,6 @@ ProviderSchema.methods.toPublicObject = function toPublicObject() {
 	return ProviderSchema.statics.Publify(this.toObject());
 };
 
-
-
 var ProviderModel = mongoose.model('Provider', ProviderSchema);
 Promise.promisifyAll(ProviderModel);
 Promise.promisifyAll(ProviderModel.prototype);
