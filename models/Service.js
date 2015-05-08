@@ -93,7 +93,7 @@ var ServiceSchema = Schema({
 ServiceSchema.statics.TranslateId = function TranslateId (id) {
 	// Allow root level services
 	if (id === null) {
-		return Promise(null);
+		return Promise.resolve(null);
 	}
 	return this.findOneAsync({id: id}, '_id', {lean: true}).then(function (service) {
 		return service ? service._id : false;
