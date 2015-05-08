@@ -78,16 +78,17 @@ User.save = function * (next) {
 		var user = new UserModel(this.req.body);
 		this.status = yield user.saveAsync()
 			.then(function(user) {
-					return user[0].sendVerificationEmail().then(function() {
-						// sent confirmation email
-						return 201;
-					}, function(err) {
-						// Couldn't send confirmation email
-						// remove could be async, but why? If it fails, not much we can do. account should be automatically purged, anyway, after a certain period of time.
-						user[0].remove();
-						return 500;
-					});
+				return user[0].sendVerificationEmail().then(function() {
+					// sent confirmation email
+					return 201;
+				}, function(err) {
+					// Couldn't send confirmation email
+					// remove could be async, but why? If it fails, not much we can do. account should be automatically purged, anyway, after a certain period of time.
+					user[0].remove();
+					// Pass err to koa
+					throw err;
 				});
+			});
 		yield next;
 	}
 };
