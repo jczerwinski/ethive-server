@@ -37,6 +37,16 @@ module.exports.initialize = function auth() {
 		secret: secret,
 		passthrough: true
 	});
+
+	// Middleware to attach User document to context
+	var populateUserMiddleware = function * (next) {
+		if (this.state.user) {
+			this.state.user = yield UserModel.findOneAsync({
+				_id: this.state.user._id
+			});
+		};
+		yield next;
+	};
 	// Authentication Policy
 	passport.use(new LocalStrategy(
 		function(identifier, password, done) {
@@ -76,5 +86,5 @@ module.exports.initialize = function auth() {
 				});
 		}
 	)); // TODO - check for spamming/etc.
-	return compose([passportMiddleware, jwtMiddleware]);
+	return compose([passportMiddleware, jwtMiddleware, populateUserMiddleware]);
 };

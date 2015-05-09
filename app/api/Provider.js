@@ -1,4 +1,3 @@
-var Responder = require('../lib/Responder');
 var ProviderModel = require('../models/Provider');
 var OfferModel = require('../models/Offer');
 var Promise = require('bluebird');

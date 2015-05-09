@@ -52,11 +52,11 @@ app.use(serve('doc'));
 // Compress
 app.use(compress());
 
-var httpsOptions = { // TODO -- Check if this is acceptable for production
-	key: fs.readFileSync('server.key'),
-	cert: fs.readFileSync('server.crt'),
-	requestCert: false,
-	rejectUnauthorized: false
+var httpsOptions = { // TODO
+	// key: fs.readFileSync('server.key'),
+	// cert: fs.readFileSync('server.crt'),
+	// requestCert: false,
+	// rejectUnauthorized: false
 };
 
 if (!module.parent) {

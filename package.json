@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon --harmony app.js",
+    "start": "nodemon --harmony app/app.js",
     "test": "NODE_ENV=test mocha --harmony",
-    "doc": "apidoc -i api -o doc"
+    "doc": "apidoc -i app/api -o doc"
   },
   "dependencies": {
     "bcryptjs": "^2.0.2",
