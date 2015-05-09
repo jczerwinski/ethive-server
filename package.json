@@ -1,5 +1,5 @@
 {
-  "name": "services",
+  "name": "ethive-server",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -35,5 +35,8 @@
     "migrate": "^0.2.0",
     "mocha": "^1.18.2",
     "supertest": "^0.12.1"
+  },
+  "engines": {
+    "node": "^0.11"
   }
 }
