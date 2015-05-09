@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var Promise = require('bluebird');
-var promiseWhile = require('../lib/promiseWhile.js');
 
 var config = require('../config/config');
 
