@@ -1,0 +1,27 @@
+{
+	"servers": {
+		"web": {
+			"protocol": "http",
+			"domain": "localhost",
+			"port": 9000
+		},
+		"api": {
+			"protocol": "http",
+			"domain": "localhost",
+			"port": 3000,
+			"path": "/api"
+		},
+		"mongo": {
+			"protocol": "mongodb",
+			"domain": "localhost",
+			"path": "/ethive"
+		}
+	},
+	"admins": ["554c27e30e46201c16bc3128"],
+	"keys": {
+		"sendgrid": {
+			"user": "ethive-dev",
+			"pass": "SG.uEIIRdoOSkifeWuv6U0uGw.4H3dZFiIfDe19ejQLU-GIXQs"
+		}
+	}
+}

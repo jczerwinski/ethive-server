@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
 var crypto = require('crypto');
-var config = require('konfig')();
-var sendgrid = require('sendgrid')(config.keys.sendgrid.user, config.keys.sendgrid.pass);
+var config = require('../config/config');
+var sendgrid = require('sendgrid')(config.get('keys').sendgrid.user, config.get('keys').sendgrid.pass);
 var Promise = require('bluebird');
 var servers = require('../lib/servers');
 

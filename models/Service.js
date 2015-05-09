@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 var Promise = require('bluebird');
 var promiseWhile = require('../lib/promiseWhile.js');
 
-var config = require('konfig')();
+var config = require('../config/config');
 
 var ObjectId = mongoose.SchemaTypes.ObjectId;
 
@@ -182,7 +182,7 @@ ServiceSchema.methods.populateAncestors = function populateAncestors() {
 ServiceSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
 	if (!user) return false;
 	// Global admin
-	if (config.app.admins.some(function (admin) {
+	if (config.get('admins').some(function (admin) {
 		return admin === user._id;
 	})) {
 		return true;

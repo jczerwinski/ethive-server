@@ -1,5 +1,5 @@
 'use strict';
-var config = require('konfig')();
+var config = require('./config/config');
 
 var mongoose = require('mongoose');
 var servers = require('./lib/servers');
@@ -60,7 +60,8 @@ var httpsOptions = { // TODO -- Check if this is acceptable for production
 };
 
 if (!module.parent) {
-	http.createServer(app.callback()).listen(config.app.servers.api.port);
-	https.createServer(httpsOptions, app.callback()).listen(config.app.https_port);
-	console.log('listening on port ' + config.app.servers.api.port + ', ssl on port ' +config.app.https_port);
+	http.createServer(app.callback()).listen(config.get('servers:api:port'));
+	// TODO SSL
+	//https.createServer(httpsOptions, app.callback()).listen(config.https_port);
+	console.log('listening on port ' + config.get('servers:api:port'));
 }

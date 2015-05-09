@@ -1,5 +1,5 @@
 var servers = require('../lib/servers');
-var config = require('konfig')();
+var config = require('../config/config');
 
 var UserModel = require('../models/User.js');
 
@@ -59,8 +59,7 @@ User.show = function * (next) {
 function setAdmin (user) {
 	if (user &&
 		user.username &&
-		Array.isArray(config.app.admins) &&
-		config.app.admins.some(function (admin) {
+		config.get('admins').some(function (admin) {
 			return admin === user.username;
 		})) {
 			user.isAdmin = true;
