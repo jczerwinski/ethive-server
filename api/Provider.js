@@ -118,7 +118,11 @@ Provider.offers.create = function* (next) {
 				ctx.body = offer.toObject();
 				ctx.status = 201;
 			}).catch(function (err) {
-				ctx.status = Responder.save.failure.status(err);
+				if (err.name === 'ValidationError') {
+					ctx.status = 400;
+				} else {
+					throw err;
+				}
 			});
 		} else {
 			this.status = 403;
