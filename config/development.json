@@ -23,5 +23,6 @@
 			"user": "ethive-dev",
 			"pass": "SG.uEIIRdoOSkifeWuv6U0uGw.4H3dZFiIfDe19ejQLU-GIXQs"
 		}
-	}
+	},
+	"jwtSecret": "secret"
 }
