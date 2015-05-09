@@ -20,7 +20,7 @@ module.exports = Service;
  */
 Service.index = function * (next) {
 	// Get top level services viewable by the user
-	this.body = yield ServiceModel.index(this.user);
+	this.body = yield ServiceModel.index(this.state.user);
 	this.status = 200;
 	yield next;
 };
@@ -39,7 +39,7 @@ Service.show = function * (next) {
 		this.status = 404;
 	} else {
 		// Found a service!
-		this.body = yield service.show(this.user);
+		this.body = yield service.show(this.state.user);
 		this.status = this.body ? 200 : 404;
 	}
 	yield next;
@@ -57,10 +57,10 @@ Service.create = function * (next) {
 		// Prep document
 		var service = this.req.body;
 		service.parent = yield ServiceModel.TranslateId(service.parentId);
-		service.admins = [this.user._id];
+		service.admins = [this.state.user._id];
 		service = new ServiceModel(service);
 		yield service.populateAncestors();
-		if (service.isAdministeredBy(this.user)) {
+		if (service.isAdministeredBy(this.state.user)) {
 			// TODO still need to validate parent field, admins?
 			service = yield service.saveAsync();
 			this.status = 200;
@@ -81,7 +81,7 @@ Service.save = function * (next) {
 	if (service) {
 		// If the service exists, update it.
 		yield service.populateAncestors();
-		if (service.isAdministeredBy(this.user)) {
+		if (service.isAdministeredBy(this.state.user)) {
 			// Authorized to save
 			// Prep updates
 			var updates = this.req.body;

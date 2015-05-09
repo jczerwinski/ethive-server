@@ -20,11 +20,11 @@ Provider.create = function* (next) {
 		this.status = 403;
 	} else {
 		// Must be authenticated
-		if (this.user) {
+		if (this.state.user) {
 			// Create
 			// Prep doc
 			var doc = this.req.body;
-			doc.admins = [this.user._id];
+			doc.admins = [this.state.user._id];
 			provider = new ProviderModel(doc);
 			try {
 				yield provider.save();
@@ -48,7 +48,7 @@ Provider.update = function * (next) {
 	if (provider) {
 		// Update
 		yield provider.populateAdmins();
-		if (provider.isAdministeredBy(this.user)) {
+		if (provider.isAdministeredBy(this.state.user)) {
 			// Prep updates
 			// Can Update!
 			var update = yield provider.update(this.req.body);
@@ -70,7 +70,7 @@ Provider.show = function* (next) {
 	});
 	if (provider) {
 		// Found it!
-		this.body =	yield provider.show(this.user);
+		this.body =	yield provider.show(this.state.user);
 		// OK if something, unauthorized if not.
 		this.status = this.body ? 200 : 403;
 	} else {
@@ -85,7 +85,7 @@ Provider.delete = function* (next) {
 		id: this.params.id
 	});
 	if (provider) {
-		if (provider.isAdministeredBy(this.user)) {
+		if (provider.isAdministeredBy(this.state.user)) {
 			// Delete away
 			yield provider.delete();
 			this.status = 204;
@@ -107,7 +107,7 @@ Provider.offers.create = function* (next) {
 		id: this.params.providerID
 	});
 	if (provider) {
-		if (provider.isAdministeredBy(this.user)) {
+		if (provider.isAdministeredBy(this.state.user)) {
 			// Create
 			var offer = this.req.body;
 			// Add the provider to the offer -- doesn't have to be provided on the object in requests through their providers

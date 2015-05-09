@@ -14,8 +14,8 @@ User.query = function * (next) {
 		if (this.query.email) query.email = this.query.email;
 		var user = yield UserModel.findOneAsync(query);
 		if (user) {
-			if (this.user) {
-				this.body = yield user.show(this.user);
+			if (this.state.user) {
+				this.body = yield user.show(this.state.user);
 				this.status = this.body ? 200 : 403;
 			} else {
 				this.status = 403;
@@ -40,9 +40,9 @@ User.show = function * (next) {
 	// Users can only see their own account. User accounts are private.
 	var user = yield UserModel.findOneAsync({username: this.params.username});
 	if (user) {
-		if (this.user) {
+		if (this.state.user) {
 			// User found. Requestor logged in.
-			this.body = yield user.show(this.user);
+			this.body = yield user.show(this.state.user);
 			setAdmin(this.body);
 			this.status = this.body ? 200 : 403;
 		} else {

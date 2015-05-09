@@ -5,7 +5,7 @@ var Offer = module.exports = {};
 Offer.show = function * (next) {
 	var offer = yield OfferModel.findOneAsync({_id: this.params.id});
 	if (offer) {
-		this.body = yield offer.show(this.user);
+		this.body = yield offer.show(this.state.user);
 		this.status = this.body ? 200 : 404;
 	} else {
 		// Offer not found
@@ -17,7 +17,7 @@ Offer.show = function * (next) {
 Offer.save = function * (next) {
 	var offer = yield OfferModel.FindAndPopulate(this.params.id);
 	if (offer) {
-		if (offer.isAdministeredBy(this.user)) {
+		if (offer.isAdministeredBy(this.state.user)) {
 			yield offer.update(this.req.body)
 			this.status = 204;
 		} else {
@@ -33,7 +33,7 @@ Offer.save = function * (next) {
 Offer.delete = function * (next) {
 	var offer = yield OfferModel.FindAndPopulate(this.params.id);
 	if (offer) {
-		if (offer.isAdministeredBy(this.user)) {
+		if (offer.isAdministeredBy(this.state.user)) {
 			yield offer.remove();
 			this.status = 204;
 		} else {
