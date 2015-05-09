@@ -99,9 +99,8 @@ Service.save = function * (next) {
 			});
 			yield next;
 		} else {
-			// Unauthorized
-			this.status = 403;
-			yield next;
+			// Unauthorized, but hide.
+			this.status = 404;
 		}
 	} else {
 		// Service wasn't found. 404!
