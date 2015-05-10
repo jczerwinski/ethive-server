@@ -17,7 +17,6 @@
 			"path": "/ethive"
 		}
 	},
-	"admins": ["554c27e30e46201c16bc3128"],
 	"keys": {
 		"sendgrid": {
 			"user": "ethive-dev",

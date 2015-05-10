@@ -15,5 +15,5 @@ if (nconf.get('NODE_ENV') === 'production') {
 
 // No need to check if admins is array :)
 nconf.defaults({
-	admins: []
+	ethive_admins: []
 });

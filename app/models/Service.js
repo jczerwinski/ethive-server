@@ -181,7 +181,7 @@ ServiceSchema.methods.populateAncestors = function populateAncestors() {
 ServiceSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
 	if (!user) return false;
 	// Global admin
-	if (config.get('admins').some(function (admin) {
+	if (config.get('ethive_admins').some(function (admin) {
 		return admin === user._id;
 	})) {
 		return true;

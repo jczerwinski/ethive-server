@@ -59,7 +59,7 @@ User.show = function * (next) {
 function setAdmin (user) {
 	if (user &&
 		user.username &&
-		config.get('admins').some(function (admin) {
+		config.get('ethive_admins').some(function (admin) {
 			return admin === user.username;
 		})) {
 			user.isAdmin = true;
