@@ -15,22 +15,22 @@ router
 // Services
 // admins array is only attached to server response if user is an admin
 .get('/api/services', Service.index)
-    .get('/api/services/:id', Service.show)
-    .post('/api/services', Service.create)
-    .put('/api/services/:id', Service.save)
+	.get('/api/services/:id', Service.show)
+	.post('/api/services', Service.create)
+	.put('/api/services/:id', Service.save)
 
 // Users
 .get('/api/users', User.query)
-    .get('/api/users/:username', User.show)
-    .post('/api/users', User.save)
-    .get('/api/verifyEmail/:emailVerificationKey', User.verifyEmail)
+	.get('/api/users/:username', User.show)
+	.post('/api/users', User.save)
+	.get('/api/verifyEmail/:emailVerificationKey', User.verifyEmail)
 
 // Providers
 .post('/api/providers', Provider.create)
-    .get('/api/providers/:id', Provider.show)
-    .put('/api/providers/:id', Provider.update)
-    .post('/api/providers/:providerID/offers', Provider.offers.create)
-    .delete('/api/providers/:id', Provider.delete)
+	.get('/api/providers/:id', Provider.show)
+	.put('/api/providers/:id', Provider.update)
+	.post('/api/providers/:providerID/offers', Provider.offers.create)
+	.delete('/api/providers/:id', Provider.delete)
 
 /**
  * @apiGroup Offers
