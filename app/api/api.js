@@ -23,6 +23,7 @@ router
 .get('/api/users', User.query)
 	.get('/api/users/:username', User.show)
 	.post('/api/users', User.save)
+	.patch('/api/users/:username', User.patch)
 	.get('/api/verifyEmail/:emailVerificationKey', User.verifyEmail)
 
 // Providers

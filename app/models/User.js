@@ -62,6 +62,16 @@ var UserSchema = mongoose.Schema({
 		default: generateVerificationKey,
 		select: false
 	},
+	preferences: {
+		currency: {
+			type: String,
+			maxlength: 3,
+			minlength: 3,
+			trim: true,
+			uppercase: true,
+			default: 'USD'
+		}
+	},
 	// Should not be persisted. Temp only.
 	providers: {}
 });

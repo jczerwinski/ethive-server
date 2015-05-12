@@ -29,6 +29,36 @@ User.query = function * (next) {
 	yield next;
 };
 
+User.patch = function * (next) {
+	// Must be logged in
+	if (this.state.user) {
+		// Users can only patch themselves
+		if (this.state.user.username === this.params.username) {
+			this.state.user.set(this.req.body);
+			try {
+				var result = yield this.state.user.saveAsync();
+				// Success!
+				this.status = 200;
+			} catch (err) {
+				if (err.name === 'ValidationError') {
+					// Validation error.
+					this.status = 400;
+				} else {
+					// Some kind of server error. Bubble up.
+					throw err;
+				}
+			}
+		} else {
+			// Trying to patch someone else's account.
+			this.status = 403;
+		}
+	} else {
+		// Not logged in.
+		this.status = 401;
+	}
+	yield next;
+};
+
 /**
  * @api {get} /users/:username
  * @apiName GetUser
