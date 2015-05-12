@@ -39,7 +39,7 @@ module.exports.initialize = function auth() {
 	});
 
 	var populateUserMiddleware = function * (next) {
-		if (this.state && this.state.user) {
+		if (this.state.user) {
 			this.state.user = yield UserModel.findOneAsync({
 				_id: this.state.user._id
 			});
