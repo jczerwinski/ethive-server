@@ -27,7 +27,11 @@ var UserSchema = mongoose.Schema({
 		type: String,
 		match: /^[a-zA-Z0-9_.]{3,20}$/,
 		required: true,
-		unique: true,
+		unique: true
+	},
+	// Derived from username in pre-validate hook below.
+	lowercaseUsername: {
+		type: String
 	},
 	password: {
 		type: String,
@@ -74,6 +78,12 @@ var UserSchema = mongoose.Schema({
 	},
 	// Should not be persisted. Temp only.
 	providers: {}
+});
+
+// Derive uniqueUsername from username before validation.
+UserSchema.pre('validate', function (next) {
+	this.uniqueUsername = this.username.toLowerCase();
+	next();
 });
 
 UserSchema.statics.TranslateId = function TranslateId (id) {

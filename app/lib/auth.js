@@ -52,9 +52,9 @@ module.exports.initialize = function auth() {
 		function(identifier, password, done) {
 			UserModel.findOneAsync({
 				$or: [{
-					username: identifier
+					lowercaseUsername: identifier.toLowerCase()
 				}, {
-					email: identifier
+					email: identifier.toLowerCase()
 				}]
 			}, '+password +bruteForce +emailVerificationKey')
 				.then(function(user) {

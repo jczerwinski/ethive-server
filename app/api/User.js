@@ -10,8 +10,8 @@ User.query = function * (next) {
 	// Users can only see their own account. User accounts are private.
 	if (this.query.username || this.query.email) {
 		var query = {};
-		if (this.query.username) query.username = this.query.username;
-		if (this.query.email) query.email = this.query.email;
+		if (this.query.username) query.lowercaseUsername = this.query.username.toLowerCase();
+		if (this.query.email) query.email = this.query.email.toLowerCase();
 		var user = yield UserModel.findOneAsync(query);
 		if (user) {
 			if (this.state.user) {
@@ -33,7 +33,7 @@ User.patch = function * (next) {
 	// Must be logged in
 	if (this.state.user) {
 		// Users can only patch themselves
-		if (this.state.user.username === this.params.username) {
+		if (this.state.user.lowercaseUsername === this.params.username.toLowerCase()) {
 			this.state.user.set(this.req.body);
 			try {
 				var result = yield this.state.user.saveAsync();
@@ -68,7 +68,7 @@ User.patch = function * (next) {
  */
 User.show = function * (next) {
 	// Users can only see their own account. User accounts are private.
-	var user = yield UserModel.findOneAsync({username: this.params.username});
+	var user = yield UserModel.findOneAsync({lowercaseUsername: this.params.username.toLowerCase()});
 	if (user) {
 		if (this.state.user) {
 			// User found. Requestor logged in.
@@ -90,7 +90,7 @@ function setAdmin (user) {
 	if (user &&
 		user.username &&
 		config.get('ethive_admins').some(function (admin) {
-			return admin === user.username;
+			return admin === user._id;
 		})) {
 			user.isAdmin = true;
 		}
@@ -98,7 +98,7 @@ function setAdmin (user) {
 
 User.save = function * (next) {
 	var response = this;
-	var existingUser = yield UserModel.findOneAsync({username: this.req.body.username});
+	var existingUser = yield UserModel.findOneAsync({lowercaseUsername: this.req.body.username.toLowerCase()});
 	if (existingUser) {
 		// Client error, bad request -- can't create existing user
 		return response.status = 400;
