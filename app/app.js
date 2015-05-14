@@ -27,6 +27,6 @@ var httpsOptions = { // TODO
 if (!module.parent) {
 	// TODO SSL
 	//https.createServer(httpsOptions, app.callback()).listen(config.https_port);
-	http.createServer(app.callback()).listen(config.get('port') || config.get('servers:api:port'));
-	console.log('listening on port ' + config.get('port') || config.get('servers:api:port'));
+	http.createServer(app.callback()).listen(config.get('PORT') || config.get('servers:api:port'));
+	console.log('listening on port ' + config.get('PORT') || config.get('servers:api:port'));
 }
