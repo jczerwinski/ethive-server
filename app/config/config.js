@@ -1,6 +1,6 @@
 var nconf = module.exports = require('nconf');
 
-//nconf.argv().env();
+nconf.argv().env();
 
 if (nconf.get('NODE_ENV') === 'production') {
 	nconf.add('literal', require('./production.json'));
