@@ -1,0 +1,27 @@
+{
+	"servers": {
+		"web": {
+			"protocol": "https",
+			"domain": "www.ethive.com",
+			"port": 80
+		},
+		"api": {
+			"protocol": "https",
+			"domain": "api.ethive.com",
+			"port": 80
+		},
+		"mongo": {
+			"protocol": "mongodb",
+			"domain": "ethive-server:x1F59QSYzIGeHrucA7JW@proximus.modulusmongo.net",
+			"port": 27017,
+			"path": "/byhop4iB"
+		}
+	},
+	"keys": {
+		"sendgrid": {
+			"user": "ethive-dev",
+			"pass": "SG.uEIIRdoOSkifeWuv6U0uGw.4H3dZFiIfDe19ejQLU-GIXQs"
+		}
+	},
+	"jwtSecret": "secret"
+}
