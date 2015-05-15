@@ -16,6 +16,7 @@
     "koa-body-parser": "^1.1.0",
     "koa-compose": "^2.3.0",
     "koa-compress": "^1.0.6",
+    "koa-cors": "0.0.14",
     "koa-force-ssl": "0.0.3",
     "koa-jwt": "1.0.0",
     "koa-logger": "^1.2.0",

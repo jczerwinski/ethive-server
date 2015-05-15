@@ -7,6 +7,9 @@ var config = require('./config/config');
 require('./lib/db');
 
 var app = module.exports = require('koa')()
+.use(require('koa-cors')({
+	origin: 'https://www.ethive.com'
+}))
 .use(require('./lib/handleErrors'))
 .use(require('koa-logger')())
 //app.use(require('koa-force-ssl')(config.app.https_port)); TODO
