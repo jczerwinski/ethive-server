@@ -123,14 +123,11 @@ User.save = function * (next) {
 };
 
 User.verifyEmail = function * (next) {
-	var user = yield UserModel.verifyEmail(this.params.emailVerificationKey).catch(function() {
-		return null;
-	});
+	var user = yield UserModel.verifyEmail(this.params.emailVerificationKey);
 	if (user) {
-		this.redirect(servers.web + '/verifyEmailSuccess');
+		this.status = 200;
 	} else {
-		this.redirect(servers.web + '/verifyEmailFailure');
+		this.status = 404;
 	}
-	this.status = 301;
 	yield next;
 };

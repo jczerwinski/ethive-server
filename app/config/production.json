@@ -2,13 +2,11 @@
 	"servers": {
 		"web": {
 			"protocol": "https",
-			"domain": "www.ethive.com",
-			"port": 80
+			"domain": "www.ethive.com"
 		},
 		"api": {
 			"protocol": "https",
-			"domain": "api.ethive.com",
-			"port": 80
+			"domain": "ethiveserver-46660.onmodulus.net"
 		},
 		"mongo": {
 			"protocol": "mongodb",

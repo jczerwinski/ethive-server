@@ -115,7 +115,7 @@ UserSchema.methods.sendVerificationEmail = function sendVerificationEmail() {
 		from: 'info@ethive.com',
 		to: this.email,
 		subject: 'Welcome to Ethive!',
-		text: 'Please confirm. ' + servers.api + '/verifyEmail/' + this.emailVerificationKey
+		text: 'Please confirm. ' + servers.web + '/verifyEmail/' + this.emailVerificationKey
 	};
 	return sendgrid.sendAsync(mail);
 };

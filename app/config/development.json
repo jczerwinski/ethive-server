@@ -2,18 +2,18 @@
 	"servers": {
 		"web": {
 			"protocol": "http",
-			"domain": "localhost",
+			"domain": "127.0.0.1",
 			"port": 9000
 		},
 		"api": {
 			"protocol": "http",
-			"domain": "localhost",
+			"domain": "127.0.0.1",
 			"port": 3000,
 			"path": "/api"
 		},
 		"mongo": {
 			"protocol": "mongodb",
-			"domain": "localhost",
+			"domain": "127.0.0.1",
 			"path": "/ethive"
 		}
 	},
