@@ -82,7 +82,7 @@ var UserSchema = mongoose.Schema({
 
 // Derive uniqueUsername from username before validation.
 UserSchema.pre('validate', function (next) {
-	this.uniqueUsername = this.username.toLowerCase();
+	this.lowercaseUsername = this.username.toLowerCase();
 	next();
 });
 
