@@ -5,7 +5,8 @@ var servers = require('./lib/servers');
 require('./lib/db');
 var app = module.exports = require('koa')()
 .use(require('koa-cors')({
-	origin: servers.web
+	origin: servers.web,
+	headers: 'Authorization,Content-Type'
 }))
 .use(require('./lib/handleErrors'))
 .use(require('koa-logger')())
