@@ -147,7 +147,7 @@ UserSchema.static('verifyEmail', function verifyEmailStatic(key) {
 		.then(function(user) {
 			if (user) {
 				// Found a user by this key! Delete the key.
-				user.emailVerificationKey = '';
+				user.emailVerificationKey = undefined;
 				return user.saveAsync();
 			};
 			// No such user.
