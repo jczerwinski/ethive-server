@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
 var crypto = require('crypto');
 var config = require('../config/config');
-var sendgrid = require('sendgrid')(config.get('keys').sendgrid.user, config.get('keys').sendgrid.pass);
+var sendgrid = require('sendgrid')(config.keys.sendgrid.user, config.keys.sendgrid.pass);
 var Promise = require('bluebird');
 var servers = require('../lib/servers');
 
@@ -125,19 +125,42 @@ UserSchema.methods.isVerified = function isVerified() {
 };
 
 UserSchema.methods.show = function show (user) {
-	if (user.username === this.username) {
+	if (this.equals(user)) {
 		// User wants his own account. Give everything.
 		var thisUser = this;
 		return mongoose.model('Provider').findAsync({
 			admins: this._id
 		}).then(function (providers) {
 			thisUser.providers = providers;
+			thisUser = thisUser.toObject();
+			thisUser.isAdmin = user.isAdmin();
 			return thisUser;
 		});
 	} else {
 		// Show nothing!
 		return Promise.cast({});
 	}
+};
+
+/**
+ * Checks whether the given user is the same as this one.
+ * @param  {User|ObjectId} user The user to check for equality.
+ * @return {boolean}
+ */
+UserSchema.methods.equals = function equals (user) {
+	if (!user) return false;
+	return this._id.equals(user._id) || this._id.equals(user);
+};
+
+/**
+ * Test whether or not this User is a global admin.
+ * @return {Boolean}
+ */
+UserSchema.methods.isAdmin = function isAdmin () {
+	var user = this;
+	return config.admins.some(function (admin) {
+		return user._id.toString() === admin;
+	});
 };
 
 UserSchema.static('verifyEmail', function verifyEmailStatic(key) {

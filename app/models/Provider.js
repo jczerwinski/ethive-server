@@ -74,13 +74,8 @@ ProviderSchema.statics.Publify = function Publify(provider) {
  */
 ProviderSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
 	if (!user) return false;
-	if (this.populated('admins')) {
-		return this.admins.some(function (admin) {
-			return admin._id.toString() === user._id;
-		});
-	}
 	return this.admins.some(function (admin) {
-		return admin.toString() === user._id;
+		return user.equals(admin);
 	});
 };
 

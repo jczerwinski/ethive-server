@@ -181,16 +181,13 @@ ServiceSchema.methods.populateAncestors = function populateAncestors() {
 ServiceSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
 	if (!user) return false;
 	// Global admin
-	if (config.get('ethive_admins').some(function (admin) {
-		return admin === user._id;
-	})) {
-		return true;
-	}
-	if (this.admins.some(isUser)) return true;
-	return this.parent ? this.parent.isAdministeredBy(user) : false;
-	function isUser (admin) {
-		return admin.toString() === user._id;
-	}
+	return user.isAdmin() ||
+		// Local admin
+		this.admins.some(function (admin) {
+			return user.equals(admin);
+		}) ||
+		// Parent admin
+		this.parent && this.parent.isAdministeredBy(user);
 };
 
 ServiceSchema.methods.showAdmin = function showAdmin() {

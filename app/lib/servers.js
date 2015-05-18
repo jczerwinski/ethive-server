@@ -4,7 +4,7 @@ var config = require('../config/config');
 var servers = module.exports = {};
 
 // Parse servers config
-var serversConfig = config.get('servers');
+var serversConfig = config.servers;
 for (var server in serversConfig) {
 	servers[server] = urlize(serversConfig[server]);
 }

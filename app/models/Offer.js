@@ -86,9 +86,6 @@ var Provider = mongoose.model('Provider');
  */
 OfferSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
 	if (!user) return false;
-	if (this.service.isAdministeredBy(user)) {
-		return true;
-	}
 	if (this.provider.isAdministeredBy(user)) {
 		return true;
 	}

@@ -17,6 +17,6 @@ var app = module.exports = require('koa')()
 .use(require('koa-compress')());
 
 if (!module.parent) {
-	http.createServer(app.callback()).listen(config.get('PORT') || config.get('servers:api:port'));
-	console.log('listening on port ' + (config.get('PORT') || config.get('servers:api:port')));
+	http.createServer(app.callback()).listen(config.servers.api.port);
+	console.log('listening on port ' + config.servers.api.port);
 }

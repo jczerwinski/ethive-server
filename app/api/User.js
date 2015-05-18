@@ -73,7 +73,6 @@ User.show = function * (next) {
 		if (this.state.user) {
 			// User found. Requestor logged in.
 			this.body = yield user.show(this.state.user);
-			setAdmin(this.body);
 			this.status = this.body ? 200 : 403;
 		} else {
 			// Not logged in.
@@ -85,16 +84,6 @@ User.show = function * (next) {
 	}
 	yield next;
 };
-
-function setAdmin (user) {
-	if (user &&
-		user.username &&
-		config.get('ethive_admins').some(function (admin) {
-			return admin === user._id;
-		})) {
-			user.isAdmin = true;
-		}
-}
 
 User.save = function * (next) {
 	var response = this;

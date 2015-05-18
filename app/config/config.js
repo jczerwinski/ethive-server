@@ -1,20 +1,24 @@
-var nconf = module.exports = require('nconf');
+var extend = require('extend');
 
-nconf.argv().env();
+var config = module.exports = {};
 
-if (nconf.get('NODE_ENV') === 'production') {
-	nconf.add('literal', require('./production.json'));
+if (process.env.NODE_ENV === 'production') {
+	extend(config, require('./production.json'));
+	config.servers.api.port = process.env.PORT || config.servers.api.port;
 	// jwtSecret must be set at command line or environment variable in production and staging, at least once there are more people working on it
 	/*if (nconf.get('jwtSecret') === undefined) {
 		throw new Error('jwtSecret must be provided as a command line argument or environment variable');
 	}*/
-} else if (nconf.get('NODE_ENV') === 'staging') {
+	if (process.env.ETHIVE_ADMINS) {
+		config.admins = JSON.parse(process.env.ETHIVE_ADMINS);
+	}
 } else {
-	// Development
-	nconf.add('literal', require('./development.json'));
+	extend(config, require('./development.json'));
+	try {
+		extend(config, require('./locals.json'));
+	} catch (err) {
+		// No norries m8!
+	}
 }
 
-// No need to check if admins is array :)
-nconf.defaults({
-	ethive_admins: []
-});
+config.admins = config.admins || [];

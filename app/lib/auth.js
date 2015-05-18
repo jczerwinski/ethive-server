@@ -4,7 +4,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var compose = require('koa-compose');
 var UserModel = require('../models/User');
 
-var secret = require('../config/config').get('jwtSecret');
+var secret = require('../config/config').jwtSecret;
 
 // Authenticate route. Passes credentials to passport, returns a JWT token.
 module.exports = function * (next) {
