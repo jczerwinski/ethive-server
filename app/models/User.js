@@ -78,6 +78,17 @@ var UserSchema = mongoose.Schema({
 	},
 	// Should not be persisted. Temp only.
 	providers: {}
+}, {
+	toObject: {
+		transform: function (doc, ret, options) {
+			delete ret.password;
+		}
+	},
+	toJSON: {
+		transform: function (doc, ret, options) {
+			delete ret.password;
+		}
+	}
 });
 
 // Derive uniqueUsername from username before validation.

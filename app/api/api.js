@@ -24,6 +24,7 @@ router
 	.get('/api/users/:username', User.show)
 	.post('/api/users', User.save)
 	.patch('/api/users/:username', User.patch)
+	.post('/api/users/:username/changePassword', User.changePassword)
 	.get('/api/verifyEmail/:emailVerificationKey', User.verifyEmail)
 
 // Providers

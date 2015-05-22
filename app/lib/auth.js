@@ -42,7 +42,7 @@ module.exports.initialize = function auth() {
 		if (this.state.user) {
 			this.state.user = yield UserModel.findOneAsync({
 				_id: this.state.user._id
-			});
+			},'+password');
 		};
 		yield next;
 	};

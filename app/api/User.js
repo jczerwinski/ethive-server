@@ -120,3 +120,37 @@ User.verifyEmail = function * (next) {
 	}
 	yield next;
 };
+
+User.changePassword = function * (next) {
+	var user = this.state.user;
+	if (user) {
+		if (user.lowercaseUsername === this.params.username.toLowerCase()) {
+			if (user.verifyPassword(this.req.body.currentPassword)) {
+				user.password = this.req.body.newPassword;
+				try {
+					var result = yield user.saveAsync();
+					// Success!
+					this.status = 200;
+				} catch (err) {
+					if (err.name === 'ValidationError') {
+						// Validation error.
+						this.status = 400;
+					} else {
+						// Some kind of server error. Bubble up.
+						throw err;
+					}
+				}
+			} else {
+				// Forbidden -- wrong password
+				this.status = 403;
+			}
+		} else {
+			// Can only change the password of the user that is currently logged in
+			this.status = 403;
+		}
+	} else {
+		// Must be logged in and present a valid token to change password
+		this.status = 401;
+	}
+	yield next;
+};
