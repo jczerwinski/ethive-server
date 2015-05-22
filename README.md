@@ -1,5 +1,8 @@
 # Ethive Server
 
+## Development
+Run `npm run serve` to serve up in development mode. `nodemon` will watch your code and make changes live as you save.
+
 ## Packages
 
 ### Models
