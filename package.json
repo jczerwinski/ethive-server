@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "forever start -c 'node --harmony' app/app.js",
+    "start": "node --harmony app/app.js",
+    "oldstart": "forever start -c 'node --harmony' -f app/app.js",
     "serve": "nodemon --harmony app/app.js",
     "test": "NODE_ENV=test mocha --harmony",
     "doc": "apidoc -i app/api -o doc"
