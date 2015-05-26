@@ -16,9 +16,6 @@
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var mongooseTypes = require('mongoose-types');
-mongooseTypes.loadTypes(mongoose);
-var Url = mongoose.SchemaTypes.Url;
 var Promise = require('bluebird');
 
 var OfferSchema = Schema({
@@ -37,7 +34,7 @@ var OfferSchema = Schema({
 		type: String
 	},
 	landing: {
-		type: Url,
+		type: String,
 		required: true
 	},
 	provider: {
