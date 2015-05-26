@@ -14,7 +14,6 @@ var app = module.exports = require('koa')()
 .use(require('koa-body-parser')())
 .use(require('./lib/auth').initialize())
 .use(require('./api/api').routes())
-.use(require('koa-static')('doc'))
 .use(require('koa-compress')());
 
 if (!module.parent) {
