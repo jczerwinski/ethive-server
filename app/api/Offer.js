@@ -18,7 +18,7 @@ Offer.save = function * (next) {
 	var offer = yield OfferModel.FindAndPopulate(this.params.id);
 	if (offer) {
 		if (offer.isAdministeredBy(this.state.user)) {
-			yield offer.update(this.req.body)
+			yield offer.update(this.request.body)
 			this.status = 204;
 		} else {
 			// Not authorized. Hide from non-admins -- not found.

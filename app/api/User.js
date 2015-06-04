@@ -34,7 +34,7 @@ User.patch = function * (next) {
 	if (this.state.user) {
 		// Users can only patch themselves
 		if (this.state.user.lowercaseUsername === this.params.username.toLowerCase()) {
-			this.state.user.set(this.req.body);
+			this.state.user.set(this.request.body);
 			try {
 				var result = yield this.state.user.saveAsync();
 				// Success!
@@ -87,13 +87,13 @@ User.show = function * (next) {
 
 User.save = function * (next) {
 	var response = this;
-	var existingUser = yield UserModel.findOneAsync({lowercaseUsername: this.req.body.username.toLowerCase()});
+	var existingUser = yield UserModel.findOneAsync({lowercaseUsername: this.request.body.username.toLowerCase()});
 	if (existingUser) {
 		// Client error, bad request -- can't create existing user
 		return response.status = 400;
 	} else {
 		// Create
-		var user = new UserModel(this.req.body);
+		var user = new UserModel(this.request.body);
 		this.status = yield user.saveAsync()
 			.then(function(user) {
 				return user[0].sendVerificationEmail().then(function() {
@@ -125,8 +125,8 @@ User.changePassword = function * (next) {
 	var user = this.state.user;
 	if (user) {
 		if (user.lowercaseUsername === this.params.username.toLowerCase()) {
-			if (user.verifyPassword(this.req.body.currentPassword)) {
-				user.password = this.req.body.newPassword;
+			if (user.verifyPassword(this.request.body.currentPassword)) {
+				user.password = this.request.body.newPassword;
 				try {
 					var result = yield user.saveAsync();
 					// Success!

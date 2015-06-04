@@ -47,7 +47,7 @@ Service.show = function * (next) {
 
 Service.create = function * (next) {
 	var service = yield ServiceModel.findOneAsync({
-		id: this.req.body.id
+		id: this.request.body.id
 	});
 	if (service) {
 		// Do not overwrite
@@ -55,7 +55,7 @@ Service.create = function * (next) {
 	} else {
 		// Create
 		// Prep document
-		var service = this.req.body;
+		var service = this.request.body;
 		service.parent = yield ServiceModel.TranslateId(service.parentId);
 		service.admins = [this.state.user._id];
 		service = new ServiceModel(service);
@@ -84,7 +84,7 @@ Service.save = function * (next) {
 		if (service.isAdministeredBy(this.state.user)) {
 			// Authorized to save
 			// Prep updates
-			var updates = this.req.body;
+			var updates = this.request.body;
 			updates.parent = yield ServiceModel.TranslateId(updates.parent);
 			service.set(updates);
 			yield service.saveAsync().then(function(res) {

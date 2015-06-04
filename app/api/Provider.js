@@ -12,7 +12,7 @@ var Provider = module.exports = {};
  */
 Provider.create = function* (next) {
 	var provider = yield ProviderModel.findOneAsync({
-		id: this.req.body.id
+		id: this.request.body.id
 	});
 	if (provider) {
 		// Do not overwrite existing providers on Create requests. Forbidden.
@@ -22,7 +22,7 @@ Provider.create = function* (next) {
 		if (this.state.user) {
 			// Create
 			// Prep doc
-			var doc = this.req.body;
+			var doc = this.request.body;
 			doc.admins = [this.state.user._id];
 			provider = new ProviderModel(doc);
 			try {
@@ -50,7 +50,7 @@ Provider.update = function * (next) {
 		if (provider.isAdministeredBy(this.state.user)) {
 			// Prep updates
 			// Can Update!
-			var update = yield provider.update(this.req.body);
+			var update = yield provider.update(this.request.body);
 			this.status = update ? 200 : 400;
 		} else {
 			// Not authorized!
@@ -108,7 +108,7 @@ Provider.offers.create = function* (next) {
 	if (provider) {
 		if (provider.isAdministeredBy(this.state.user)) {
 			// Create
-			var offer = this.req.body;
+			var offer = this.request.body;
 			// Add the provider to the offer -- doesn't have to be provided on the object in requests through their providers
 			offer.provider = provider._id;
 			offer.service = yield ServiceModel.TranslateId(offer.service);
