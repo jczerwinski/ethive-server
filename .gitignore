@@ -1,4 +1,4 @@
-.npm-debug
+.npm-debug.log
 node_modules
 doc
 app/config/locals.json
