@@ -2,8 +2,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var Promise = require('bluebird');
 
-var config = require('../config/config');
-
 var ObjectId = mongoose.SchemaTypes.ObjectId;
 
 var ServiceSchema = Schema({
@@ -123,19 +121,53 @@ ServiceSchema.virtual('parentId').get(function () {
 	return typeof this.populated('parent') ? undefined : this.parent;
 });
 
-// Gives an index of all services. Indexed versions include _id, name, description, type, and children. Admins are shown only if user administers the service.
+/**
+ * Provides a flat collection of all services that the given User is permitted to view. Children are __not__ inlined.
+ *
+ * Use to provide clients with a full list of services -- for searching, building a navigable service tree, tabular display, etc.
+ * @param  {User} user The User requesting the index.
+ * @return {Service[]}
+ */
 ServiceSchema.statics.index = function index(user) {
-	return this.findAsync({
-		parent: undefined
-	}).then(function (services) {
-		return Promise.reduce(services, function (authorizedServices, service) {
-			// Show to user, ready to go.
-			return service.show(user).then(function (service) {
-				if (service === null) return authorizedServices;
-				authorizedServices.push(service);
-				return authorizedServices;
-			});
+	// For efficiency, we do things manually here.
+	// First, get all our services.
+	return this.findAsync().then(function (services) {
+		// Next, index them by _id
+		var index = services.reduce(function (index, service) {
+			index[service._id] = service;
+			return index;
+		}, {});
+		// Populate ancestors so we can check permissions.
+		services = services.map(function (service) {
+			service.parent = index[service.parent];
+			return service;
+		});
+		// Remove services that the user doesn't administer OR that are not published. Process services for their intended viewer. Prep as POJO.
+		services = services.reduce(function (services, service) {
+			if (service.isAdministeredBy(user)) {
+				// Show the service to an admin
+				// POJO
+				service = service.toObject({virtuals: false});
+			} else if (service.isPublished()) {
+				// Show a published service
+				// POJO
+				service = service.toObject({virtuals: false});
+				// Remove admins
+				delete service.admins;
+			} else {
+				// Don't show the service.
+				return services;
+			}
+			// Dereference parent to flatten for transmission
+			if (service.parent) {
+				service.parentId = service.parent._id;
+				delete service.parent;
+			}
+			services.push(service);
+			return services;
 		}, []);
+		// We now have a flat list of services that are processed for the given user. Pass them along!
+		return services;
 	});
 };
 
@@ -183,11 +215,20 @@ ServiceSchema.methods.isAdministeredBy = function isAdministeredBy(user) {
 	// Global admin
 	return user.isAdmin() ||
 		// Local admin
-		this.admins.some(function (admin) {
-			return user.equals(admin);
-		}) ||
+		this.hasAdmin(user) ||
 		// Parent admin
 		this.parent && this.parent.isAdministeredBy(user);
+};
+
+/**
+ * Tests whether the given user is listed as an administer __on this particular service only__. Does not depend on ancestors.
+ * @param {User} user User to test
+ * @return {Boolean}
+ */
+ServiceSchema.methods.hasAdmin = function hasAdmin (user) {
+	return this.admins.some(function (admin) {
+		return user.equals(admin);
+	});
 };
 
 ServiceSchema.methods.showAdmin = function showAdmin() {

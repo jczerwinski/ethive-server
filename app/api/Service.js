@@ -9,7 +9,7 @@ var ServiceModel = require('../models/Service.js');
  *     children: {} // Full blown service, but only direct descendents.
  *   }
  *
- * The only exception is index(), which returns an array of all such services that have no parents.
+ * The only exception is index(), which returns a flat array of all services without children or parents attached.
  */
 var Service = {};
 module.exports = Service;
