@@ -104,7 +104,7 @@ Service.save = function * (next) {
 			// Authorized to save
 			// Prep updates
 			var updates = this.request.body;
-			updates.parent = yield ServiceModel.TranslateId(updates.parent);
+			updates.parent = yield ServiceModel.TranslateId(updates.parentId);
 			service.set(updates);
 			yield service.saveAsync().then(function(res) {
 				var product = res[0];
