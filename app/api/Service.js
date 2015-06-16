@@ -1,5 +1,6 @@
 var ServiceModel = require('../models/Service.js');
 var Promise = require('bluebird');
+var util = require ('../lib/util.js');
 /**
  * Services comprise a forest. API Output is always in the form:
  *
@@ -20,7 +21,7 @@ module.exports = Service;
  */
 Service.index = function * (next) {
 	// If there's a query, do a search!
-	if (this.query) {
+	if (!util.isEmpty(this.query)) {
 		if (this.query.search) {
 			var query = {
 				name: new RegExp('^' + this.query.search, 'i')
