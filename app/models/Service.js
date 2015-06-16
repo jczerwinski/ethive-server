@@ -7,14 +7,16 @@ var ObjectId = mongoose.SchemaTypes.ObjectId;
 var ServiceSchema = Schema({
 	name: {
 		type: String,
-		required: true
+		required: true,
+
 	},
 	id: {
 		type: String,
 		required: true,
 		lowercase: true,
 		unique: true,
-		match: /^[a-z0-9-]{1,}$/
+		match: /^[a-z0-9-]{1,}$/,
+		index: true
 	},
 	parent: {
 		type: Schema.Types.ObjectId,

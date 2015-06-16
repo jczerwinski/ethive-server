@@ -1,5 +1,5 @@
 var ServiceModel = require('../models/Service.js');
-
+var Promise = require('bluebird');
 /**
  * Services comprise a forest. API Output is always in the form:
  *
@@ -19,9 +19,27 @@ module.exports = Service;
  * @public
  */
 Service.index = function * (next) {
-	// Get top level services viewable by the user
-	this.body = yield ServiceModel.index(this.state.user);
-	this.status = 200;
+	// If there's a query, do a search!
+	if (this.query) {
+		if (this.query.search) {
+			var query = {
+				name: new RegExp('^' + this.query.search, 'i')
+			};
+			var services = yield ServiceModel.findAsync(query);
+			var user = this.state.user;
+			this.body = yield Promise.reduce(services, function (services, service) {
+				return service.show(user).then(function (service) {
+					if (service) services.push(service);
+					return services;
+				});
+			}, []);
+			this.status = 200;
+		}
+	} else {
+		// Get top level services viewable by the user
+		this.body = yield ServiceModel.index(this.state.user);
+		this.status = 200;
+	}
 	yield next;
 };
 
