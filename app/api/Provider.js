@@ -98,37 +98,3 @@ Provider.delete = function* (next) {
 	}
 	yield next;
 };
-
-Provider.offers = {};
-
-Provider.offers.create = function* (next) {
-	var provider = yield ProviderModel.findOneAsync({
-		id: this.params.providerID
-	});
-	if (provider) {
-		if (provider.isAdministeredBy(this.state.user)) {
-			// Create
-			var offer = this.request.body;
-			// Add the provider to the offer -- doesn't have to be provided on the object in requests through their providers
-			offer.provider = provider._id;
-			offer.service = yield ServiceModel.TranslateId(offer.service);
-			var ctx = this;
-			yield OfferModel.createAsync(offer).then(function (offer) {
-				ctx.body = offer.toObject();
-				ctx.status = 201;
-			}).catch(function (err) {
-				if (err.name === 'ValidationError') {
-					ctx.status = 400;
-				} else {
-					throw err;
-				}
-			});
-		} else {
-			this.status = 403;
-		}
-	} else {
-		// Provider not found
-		this.status = 404;
-	}
-	yield next;
-};

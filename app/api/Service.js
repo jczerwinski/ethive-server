@@ -23,9 +23,13 @@ Service.index = function * (next) {
 	// If there's a query, do a search!
 	if (!util.isEmpty(this.query)) {
 		if (this.query.search) {
-			var query = {
-				name: new RegExp('^' + this.query.search, 'i')
-			};
+			try {
+				var query = {
+					name: new RegExp('^' + this.query.search, 'i')
+				};
+			} catch (err) {
+				this.throw(400);
+			}
 			var services = yield ServiceModel.findAsync(query);
 			var user = this.state.user;
 			this.body = yield Promise.reduce(services, function (services, service) {
