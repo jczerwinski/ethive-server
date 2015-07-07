@@ -109,7 +109,7 @@ ProviderSchema.methods.update = function * (updates) {
 	this.set(updates);
 	try {
 		yield this.saveAsync();
-		return true;
+		return this;
 	} catch (err) {
 		if (err.name === 'ValidationError') {
 			return false;

@@ -28,6 +28,7 @@ Provider.create = function* (next) {
 			try {
 				yield provider.save();
 				this.status = 201;
+				this.body = provider;
 			} catch (err) {
 				if (err.name === 'ValidationError') {
 					this.status = 400;
@@ -52,6 +53,7 @@ Provider.update = function * (next) {
 			// Can Update!
 			var update = yield provider.update(this.request.body);
 			this.status = update ? 200 : 400;
+			this.body = update;
 		} else {
 			// Not authorized!
 			this.status = 403;
