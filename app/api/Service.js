@@ -85,8 +85,9 @@ Service.create = function * (next) {
 		yield service.populateAncestors();
 		if (service.isAdministeredBy(this.state.user)) {
 			// TODO still need to validate parent field, admins?
-			service = yield service.saveAsync();
+			yield service.saveAsync();
 			this.status = 200;
+			this.body = service;
 		} else {
 			// Not authorized
 			this.status = 403;
