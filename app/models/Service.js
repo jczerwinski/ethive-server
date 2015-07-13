@@ -8,7 +8,7 @@ var ServiceSchema = Schema({
 	name: {
 		type: String,
 		required: true,
-		index: true
+		text: true
 	},
 	id: {
 		type: String,
