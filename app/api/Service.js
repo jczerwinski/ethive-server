@@ -132,3 +132,35 @@ Service.save = function * (next) {
 	}
 	yield next;
 };
+
+Service.delete = function * (next) {
+	var service = yield ServiceModel.findOneAsync({
+		id: this.params.id
+	});
+	if (service) {
+		yield service.populateAncestors();
+		if (service.isAdministeredBy(this.state.user)) {
+			yield service.populateChildren(true);
+			if (service.canDelete()) {
+				yield service.remove();
+				this.status = 200;
+			} else {
+				this.status = 409;
+			}
+		} else {
+			if (service.isPublished()) {
+				if (this.state.user) {
+					this.status = 403;
+				} else {
+					// Must log in
+					this.status = 401;
+				}
+			} else {
+				this.status = 404;
+			}
+		}
+	} else {
+		this.status = 404;
+	}
+	yield next;
+};

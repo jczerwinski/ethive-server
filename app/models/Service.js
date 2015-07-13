@@ -333,6 +333,10 @@ ServiceSchema.methods.isPublished = function isPublished() {
 	return this.status === 'published' && (!this.parent || this.parent.isPublished());
 };
 
+ServiceSchema.methods.canDelete = function canDelete () {
+	return this.type === 'service' && this.offers.length === 0 || this.type === 'category' && this.children.length === 0;
+};
+
 // Requires populateAncestors first
 ServiceSchema.methods.hasAncestor = function hasAncestor(ancestor) {
 	if (!this.parent) return false;

@@ -18,6 +18,7 @@ router
 	.get('/api/services/:id', Service.show)
 	.post('/api/services', Service.create)
 	.put('/api/services/:id', Service.save)
+	.delete('/api/services/:id', Service.delete)
 
 // Users
 .get('/api/users', User.query)
