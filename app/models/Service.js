@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var Promise = require('bluebird');
+var tree = require('mongoose-path-tree');
 
 var ObjectId = mongoose.SchemaTypes.ObjectId;
 
@@ -21,6 +22,7 @@ var ServiceSchema = Schema({
 	parent: {
 		type: Schema.Types.ObjectId,
 		ref: 'Service',
+		index: true,
 		// Need to ensure no cycles on parent, and that parent either exists or is null
 		validate: [
 			{
@@ -83,6 +85,8 @@ var ServiceSchema = Schema({
 		// Warning: toObject should only ever be called after children are populated.
 	}
 });
+
+ServiceSchema.plugin(tree, {parentExists: true});
 
 /**
  * Translate a String id to an ObjectId _id.
@@ -194,6 +198,35 @@ ServiceSchema.methods.show = function show(user) {
 		return Promise.cast(null);
 	});
 };
+
+/**
+ * Show multiple. Different from instance show -- does not populate children. Currently only designed to be used by Service Autosuggest
+ */
+ServiceSchema.statics.show = function *(services, user) {
+	var ancestors = yield this.getAncestorsAsync(services);
+	services.forEach(function (service, index) {
+		attachAncestors(service, ancestors[index]);
+	});
+	services = services.map(function (service) {
+		if (service.isAdministeredBy(user)) {
+			return service.toObject();
+		}
+		if (service.isPublished()) {
+			return service.toPublicObject();
+		}
+	});
+	return services.filter(function (service) {
+		return !!service;
+	});
+};
+
+function attachAncestors (service, ancestors) {
+	ancestors.reduceRight(function (child, parent) {
+		child.parent = parent;
+		return parent;
+	}, service);
+	return service;
+}
 
 /**
  * Recursively populates this service's parent and its ancestors. Does nothing if already populated or if no parent exists.

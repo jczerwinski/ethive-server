@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === 'production') {
 	try {
 		extend(config, require('./locals.json'));
 	} catch (err) {
-		// No norries m8!
+		// No-op. Locals override development and are optional.
 	}
 }
 

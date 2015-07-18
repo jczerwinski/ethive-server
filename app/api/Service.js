@@ -28,14 +28,9 @@ Service.index = function * (next) {
 					$search: this.query.search
 				}
 			};
-			var services = yield ServiceModel.findAsync(query);
+			var services = yield ServiceModel.find(query).limit(10).exec();
 			var user = this.state.user;
-			this.body = yield Promise.reduce(services, function (services, service) {
-				return service.show(user).then(function (service) {
-					if (service) services.push(service);
-					return services;
-				});
-			}, []);
+			this.body = yield ServiceModel.show(services, user);
 			this.status = 200;
 		}
 	} else {
