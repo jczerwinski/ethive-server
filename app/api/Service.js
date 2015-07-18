@@ -28,7 +28,12 @@ Service.index = function * (next) {
 					$search: this.query.search
 				}
 			};
-			var services = yield ServiceModel.find(query).limit(10).exec();
+			var sort = {
+				score: {
+					$meta: 'textScore'
+				}
+			};
+			var services = yield ServiceModel.find(query, sort).sort(sort).limit(10).exec();
 			var user = this.state.user;
 			this.body = yield ServiceModel.show(services, user);
 			this.status = 200;
