@@ -9,6 +9,7 @@
     "doc": "apidoc -i app/api -o doc"
   },
   "dependencies": {
+    "appdynamics": "^4.1.0",
     "bcryptjs": "^2.0.2",
     "bluebird": "^2.9.26",
     "extend": "^2.0.1",
