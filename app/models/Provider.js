@@ -150,7 +150,7 @@ ProviderSchema.methods.show = function show (user) {
 };
 
 ProviderSchema.statics.TranslateId = function TranslateId (id) {
-	return findOneAsync({id: id}, '_id', {lean: true}).then(function (provider) {
+	return this.findOneAsync({id: id}, '_id', {lean: true}).then(function (provider) {
 		return provider ? provider._id : null;
 	});
 };
