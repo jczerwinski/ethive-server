@@ -1,4 +1,5 @@
 'use strict';
+require('newrelic');
 var http = require('http');
 var config = require('./config/config');
 var servers = require('./lib/servers');

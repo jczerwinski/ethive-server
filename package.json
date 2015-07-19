@@ -24,6 +24,7 @@
     "koa-static": "^1.4.9",
     "mongoose": "^4.0.3",
     "mongoose-path-tree": "jczerwinski/mongoose-path-tree",
+    "newrelic": "^1.21.1",
     "passport-local": "^1.0.0",
     "sendgrid": "^1.8.0"
   },
