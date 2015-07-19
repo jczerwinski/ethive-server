@@ -1,0 +1,779 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007efe8f999ade, pid=30210, tid=139631815198464
+#
+# JRE version: Java(TM) SE Runtime Environment (7.0_51-b13) (build 1.7.0_51-b13)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (24.51-b03 mixed mode linux-amd64 compressed oops)
+# Problematic frame:
+# V  [libjvm.so+0x811ade]  SR_handler(int, siginfo*, ucontext*)+0x3e
+#
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.sun.com/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread is native thread
+
+siginfo:si_signo=SIGSEGV: si_errno=0, si_code=1 (SEGV_MAPERR), si_addr=0x0000000000000110
+
+Registers:
+RAX=0x0000000000000000, RBX=0x00007efe90be6700, RCX=0xffffffffffffffff, RDX=0x00007efe90be8a20
+RSP=0x00007ffecef6f3c0, RBP=0x00007ffecef6f470, RSI=0x00007ffecef6f5b0, RDI=0x0000000000000001
+R8 =0x00000000000000ca, R9 =0x00007efe90be69d0, R10=0x0000000000000000, R11=0x0000000000000246
+R12=0x00007ffecef6f480, R13=0x00007ffecef6f5b0, R14=0x00007efe90be8690, R15=0x0000000000000002
+RIP=0x00007efe8f999ade, EFLAGS=0x0000000000010246, CSGSFS=0x0000000000000033, ERR=0x0000000000000004
+  TRAPNO=0x000000000000000e
+
+Top of Stack: (sp=0x00007ffecef6f3c0)
+0x00007ffecef6f3c0:   00007efe90039313 0000000000000000
+0x00007ffecef6f3d0:   00007efe905d033c 0000000200000005
+0x00007ffecef6f3e0:   ffffffffffffffff 0000001d00000000
+0x00007ffecef6f3f0:   00007efe905d0340 0000003000000010
+0x00007ffecef6f400:   00007ffecef6fa60 00007ffecef6f9a0
+0x00007ffecef6f410:   00007ffecef6f810 0000000000000002
+0x00007ffecef6f420:   0000000000000003 00007ffecef6f820
+0x00007ffecef6f430:   000000000000006d 0000003000000010
+0x00007ffecef6f440:   00007ffecef6faa0 00007efe90be6700
+0x00007ffecef6f450:   00007ffecef6f9c0 00007ffecef6f920
+0x00007ffecef6f460:   00007efe90be6d28 00007efe90be8700
+0x00007ffecef6f470:   00007ffecef6f9f0 00007efe907e3d10
+0x00007ffecef6f480:   0000000000000001 0000000000000000
+0x00007ffecef6f490:   0000000000000000 00007ffe00000002
+0x00007ffecef6f4a0:   0000000000000000 00000000000000ca
+0x00007ffecef6f4b0:   00007efe90be69d0 0000000000000000
+0x00007ffecef6f4c0:   0000000000000246 00007ffecef6f9c0
+0x00007ffecef6f4d0:   00007ffecef6f920 00007efe90be6d28
+0x00007ffecef6f4e0:   00007efe90be8700 00007efe90be69d0
+0x00007ffecef6f4f0:   0000000000000000 00007ffecef6f9f0
+0x00007ffecef6f500:   00007efe90be6700 0000000000007606
+0x00007ffecef6f510:   00000000000000ca ffffffffffffffff
+0x00007ffecef6f520:   00007ffecef6f910 00007efe907db8eb
+0x00007ffecef6f530:   0000000000000246 0000000000000033
+0x00007ffecef6f540:   0000000000000000 0000000000000000
+0x00007ffecef6f550:   0000000000000000 0000000000000000
+0x00007ffecef6f560:   00007ffecef6f640 00007efe8fffedc8
+0x00007ffecef6f570:   00007efe90beaa38 00007ffecef6f608
+0x00007ffecef6f580:   00007ffecef6f604 00007efe909fb140
+0x00007ffecef6f590:   00007efe8fffedc8 00007efe907d5f88
+0x00007ffecef6f5a0:   00007efe907d3ed0 0000000000000000
+0x00007ffecef6f5b0:   000000000000000c 0000000000000000 
+
+Instructions: (pc=0x00007efe8f999ade)
+0x00007efe8f999abe:   48 81 ec b0 00 00 00 e8 e6 68 9d ff 44 8b 38 49
+0x00007efe8f999ace:   89 c6 48 8b 05 79 a3 5e 00 8b 38 e8 b2 71 9d ff
+0x00007efe8f999ade:   48 8b 98 10 01 00 00 8b 8b a8 00 00 00 83 f9 01
+0x00007efe8f999aee:   74 20 45 89 3e 48 8b 5d d8 4c 8b 65 e0 4c 8b 6d 
+
+Register to memory mapping:
+
+RAX=0x0000000000000000 is an unknown value
+RBX=0x00007efe90be6700 is pointing into the stack for thread: 0x00007efe8800d000
+RCX=0xffffffffffffffff is an unknown value
+RDX=0x00007efe90be8a20 is an unknown value
+RSP=0x00007ffecef6f3c0 is an unknown value
+RBP=0x00007ffecef6f470 is an unknown value
+RSI=0x00007ffecef6f5b0 is an unknown value
+RDI=0x0000000000000001 is an unknown value
+R8 =0x00000000000000ca is an unknown value
+R9 =0x00007efe90be69d0 is pointing into the stack for thread: 0x00007efe8800d000
+R10=0x0000000000000000 is an unknown value
+R11=0x0000000000000246 is an unknown value
+R12=0x00007ffecef6f480 is an unknown value
+R13=0x00007ffecef6f5b0 is an unknown value
+R14=0x00007efe90be8690 is an unknown value
+R15=0x0000000000000002 is an unknown value
+
+
+Stack: [0x00007ffecee77000,0x00007ffecef77000],  sp=0x00007ffecef6f3c0,  free space=992k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0x811ade]  SR_handler(int, siginfo*, ucontext*)+0x3e
+C  [libpthread.so.0+0x10d10]  __funlockfile+0x50
+C  [libjli.so+0x258a]  ContinueInNewThread+0x7a
+C  [libjli.so+0x50e0]  JLI_Launch+0x480
+C  [java+0x686]  __libc_start_main@@GLIBC_2.2.5+0x686
+
+
+---------------  P R O C E S S  ---------------
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ PSYoungGen      total 59392K, used 35620K [0x00000000f9c00000, 0x00000000fde00000, 0x0000000100000000)
+  eden space 52736K, 55% used [0x00000000f9c00000,0x00000000fb8ae0e0,0x00000000fcf80000)
+  from space 6656K, 93% used [0x00000000fd680000,0x00000000fdc9b248,0x00000000fdd00000)
+  to   space 7168K, 0% used [0x00000000fcf80000,0x00000000fcf80000,0x00000000fd680000)
+ ParOldGen       total 34304K, used 9209K [0x00000000ed400000, 0x00000000ef580000, 0x00000000f9c00000)
+  object space 34304K, 26% used [0x00000000ed400000,0x00000000edcfe640,0x00000000ef580000)
+ PSPermGen       total 22016K, used 21526K [0x00000000e5c00000, 0x00000000e7180000, 0x00000000ed400000)
+  object space 22016K, 97% used [0x00000000e5c00000,0x00000000e7105818,0x00000000e7180000)
+
+Card table byte_map: [0x00007efe8db0b000,0x00007efe8dbde000] byte_map_base: 0x00007efe8d3dd000
+
+Polling page: 0x00007efe90c11000
+
+Code Cache  [0x00007efe85000000, 0x00007efe85270000, 0x00007efe88000000)
+ total_blobs=640 nmethods=266 adapters=328 free_code_cache=48095Kb largest_free_block=49214848
+
+Compilation events (10 events):
+Event: 303.584 Thread 0x00007efe8820a000  265             java.util.concurrent.locks.ReentrantLock::lockInterruptibly (9 bytes)
+Event: 303.587 Thread 0x00007efe8820a000 nmethod 265 0x00007efe85103fd0 code [0x00007efe85104140, 0x00007efe851042d8]
+Event: 303.618 Thread 0x00007efe8820c000  266             java.util.PriorityQueue::poll (64 bytes)
+Event: 303.620 Thread 0x00007efe8820c000 nmethod 266 0x00007efe85103bd0 code [0x00007efe85103d20, 0x00007efe85103e58]
+Event: 303.900 Thread 0x00007efe8820a000  267   !         java.util.concurrent.DelayQueue::take (212 bytes)
+Event: 303.927 Thread 0x00007efe8820a000 nmethod 267 0x00007efe8510e3d0 code [0x00007efe8510e6c0, 0x00007efe8510f558]
+Event: 307.376 Thread 0x00007efe8820c000  268             java.util.HashMap$KeyIterator::next (8 bytes)
+Event: 307.379 Thread 0x00007efe8820c000 nmethod 268 0x00007efe851074d0 code [0x00007efe85107620, 0x00007efe85107778]
+Event: 348.114 Thread 0x00007efe8820a000  269             java.util.PriorityQueue::siftUpComparable (61 bytes)
+Event: 348.118 Thread 0x00007efe8820a000 nmethod 269 0x00007efe85106dd0 code [0x00007efe85106f40, 0x00007efe851071d8]
+
+GC Heap History (10 events):
+Event: 5.730 GC heap before
+{Heap before GC invocations=2 (full 0):
+ PSYoungGen      total 15360K, used 15355K [0x00000000f9c00000, 0x00000000fba00000, 0x0000000100000000)
+  eden space 13312K, 100% used [0x00000000f9c00000,0x00000000fa900000,0x00000000fa900000)
+  from space 2048K, 99% used [0x00000000fa900000,0x00000000faafee58,0x00000000fab00000)
+  to   space 2048K, 0% used [0x00000000fb800000,0x00000000fb800000,0x00000000fba00000)
+ ParOldGen       total 34304K, used 426K [0x00000000ed400000, 0x00000000ef580000, 0x00000000f9c00000)
+  object space 34304K, 1% used [0x00000000ed400000,0x00000000ed46aa68,0x00000000ef580000)
+ PSPermGen       total 21504K, used 8123K [0x00000000e5c00000, 0x00000000e7100000, 0x00000000ed400000)
+  object space 21504K, 37% used [0x00000000e5c00000,0x00000000e63eec70,0x00000000e7100000)
+Event: 5.738 GC heap after
+Heap after GC invocations=2 (full 0):
+ PSYoungGen      total 15360K, used 2036K [0x00000000f9c00000, 0x00000000fba00000, 0x0000000100000000)
+  eden space 13312K, 0% used [0x00000000f9c00000,0x00000000f9c00000,0x00000000fa900000)
+  from space 2048K, 99% used [0x00000000fb800000,0x00000000fb9fd158,0x00000000fba00000)
+  to   space 2048K, 0% used [0x00000000fa900000,0x00000000fa900000,0x00000000fab00000)
+ ParOldGen       total 34304K, used 1784K [0x00000000ed400000, 0x00000000ef580000, 0x00000000f9c00000)
+  object space 34304K, 5% used [0x00000000ed400000,0x00000000ed5be270,0x00000000ef580000)
+ PSPermGen       total 21504K, used 8123K [0x00000000e5c00000, 0x00000000e7100000, 0x00000000ed400000)
+  object space 21504K, 37% used [0x00000000e5c00000,0x00000000e63eec70,0x00000000e7100000)
+}
+Event: 5.981 GC heap before
+{Heap before GC invocations=3 (full 0):
+ PSYoungGen      total 15360K, used 15348K [0x00000000f9c00000, 0x00000000fba00000, 0x0000000100000000)
+  eden space 13312K, 100% used [0x00000000f9c00000,0x00000000fa900000,0x00000000fa900000)
+  from space 2048K, 99% used [0x00000000fb800000,0x00000000fb9fd158,0x00000000fba00000)
+  to   space 2048K, 0% used [0x00000000fa900000,0x00000000fa900000,0x00000000fab00000)
+ ParOldGen       total 34304K, used 1784K [0x00000000ed400000, 0x00000000ef580000, 0x00000000f9c00000)
+  object space 34304K, 5% used [0x00000000ed400000,0x00000000ed5be270,0x00000000ef580000)
+ PSPermGen       total 21504K, used 10080K [0x00000000e5c00000, 0x00000000e7100000, 0x00000000ed400000)
+  object space 21504K, 46% used [0x00000000e5c00000,0x00000000e65d8060,0x00000000e7100000)
+Event: 5.987 GC heap after
+Heap after GC invocations=3 (full 0):
+ PSYoungGen      total 15360K, used 2016K [0x00000000f9c00000, 0x00000000fba00000, 0x0000000100000000)
+  eden space 13312K, 0% used [0x00000000f9c00000,0x00000000f9c00000,0x00000000fa900000)
+  from space 2048K, 98% used [0x00000000fa900000,0x00000000faaf8030,0x00000000fab00000)
+  to   space 2048K, 0% used [0x00000000fb800000,0x00000000fb800000,0x00000000fba00000)
+ ParOldGen       total 34304K, used 3191K [0x00000000ed400000, 0x00000000ef580000, 0x00000000f9c00000)
+  object space 34304K, 9% used [0x00000000ed400000,0x00000000ed71dd98,0x00000000ef580000)
+ PSPermGen       total 21504K, used 10080K [0x00000000e5c00000, 0x00000000e7100000, 0x00000000ed400000)
+  object space 21504K, 46% used [0x00000000e5c00000,0x00000000e65d8060,0x00000000e7100000)
+}
+Event: 6.176 GC heap before
+{Heap before GC invocations=4 (full 0):
+ PSYoungGen      total 15360K, used 15326K [0x00000000f9c00000, 0x00000000fba00000, 0x0000000100000000)
+  eden space 13312K, 99% used [0x00000000f9c00000,0x00000000fa8ff838,0x00000000fa900000)
+  from space 2048K, 98% used [0x00000000fa900000,0x00000000faaf8030,0x00000000fab00000)
+  to   space 2048K, 0% used [0x00000000fb800000,0x00000000fb800000,0x00000000fba00000)
+ ParOldGen       total 34304K, used 3191K [0x00000000ed400000, 0x00000000ef580000, 0x00000000f9c00000)
+  object space 34304K, 9% used [0x00000000ed400000,0x00000000ed71dd98,0x00000000ef580000)
+ PSPermGen       total 21504K, used 11592K [0x00000000e5c00000, 0x00000000e7100000, 0x00000000ed400000)
+  object space 21504K, 53% used [0x00000000e5c00000,0x00000000e67522b0,0x00000000e7100000)
+Event: 6.189 GC heap after
+Heap after GC invocations=4 (full 0):
+ PSYoungGen      total 28672K, used 2034K [0x00000000f9c00000, 0x00000000fba00000, 0x0000000100000000)
+  eden space 26624K, 0% used [0x00000000f9c00000,0x00000000f9c00000,0x00000000fb600000)
+  from space 2048K, 99% used [0x00000000fb800000,0x00000000fb9fcb50,0x00000000fba00000)
+  to   space 2048K, 0% used [0x00000000fb600000,0x00000000fb600000,0x00000000fb800000)
+ ParOldGen       total 34304K, used 4712K [0x00000000ed400000, 0x00000000ef580000, 0x00000000f9c00000)
+  object space 34304K, 13% used [0x00000000ed400000,0x00000000ed89a170,0x00000000ef580000)
+ PSPermGen       total 21504K, used 11592K [0x00000000e5c00000, 0x00000000e7100000, 0x00000000ed400000)
+  object space 21504K, 53% used [0x00000000e5c00000,0x00000000e67522b0,0x00000000e7100000)
+}
+Event: 6.614 GC heap before
+{Heap before GC invocations=5 (full 0):
+ PSYoungGen      total 28672K, used 28658K [0x00000000f9c00000, 0x00000000fba00000, 0x0000000100000000)
+  eden space 26624K, 100% used [0x00000000f9c00000,0x00000000fb600000,0x00000000fb600000)
+  from space 2048K, 99% used [0x00000000fb800000,0x00000000fb9fcb50,0x00000000fba00000)
+  to   space 2048K, 0% used [0x00000000fb600000,0x00000000fb600000,0x00000000fb800000)
+ ParOldGen       total 34304K, used 4712K [0x00000000ed400000, 0x00000000ef580000, 0x00000000f9c00000)
+  object space 34304K, 13% used [0x00000000ed400000,0x00000000ed89a170,0x00000000ef580000)
+ PSPermGen       total 21504K, used 15851K [0x00000000e5c00000, 0x00000000e7100000, 0x00000000ed400000)
+  object space 21504K, 73% used [0x00000000e5c00000,0x00000000e6b7ad80,0x00000000e7100000)
+Event: 6.627 GC heap after
+Heap after GC invocations=5 (full 0):
+ PSYoungGen      total 28672K, used 2033K [0x00000000f9c00000, 0x00000000fdd00000, 0x0000000100000000)
+  eden space 26624K, 0% used [0x00000000f9c00000,0x00000000f9c00000,0x00000000fb600000)
+  from space 2048K, 99% used [0x00000000fb600000,0x00000000fb7fc570,0x00000000fb800000)
+  to   space 6656K, 0% used [0x00000000fd680000,0x00000000fd680000,0x00000000fdd00000)
+ ParOldGen       total 34304K, used 9209K [0x00000000ed400000, 0x00000000ef580000, 0x00000000f9c00000)
+  object space 34304K, 26% used [0x00000000ed400000,0x00000000edcfe640,0x00000000ef580000)
+ PSPermGen       total 21504K, used 15851K [0x00000000e5c00000, 0x00000000e7100000, 0x00000000ed400000)
+  object space 21504K, 73% used [0x00000000e5c00000,0x00000000e6b7ad80,0x00000000e7100000)
+}
+Event: 7.031 GC heap before
+{Heap before GC invocations=6 (full 0):
+ PSYoungGen      total 28672K, used 28657K [0x00000000f9c00000, 0x00000000fdd00000, 0x0000000100000000)
+  eden space 26624K, 100% used [0x00000000f9c00000,0x00000000fb600000,0x00000000fb600000)
+  from space 2048K, 99% used [0x00000000fb600000,0x00000000fb7fc570,0x00000000fb800000)
+  to   space 6656K, 0% used [0x00000000fd680000,0x00000000fd680000,0x00000000fdd00000)
+ ParOldGen       total 34304K, used 9209K [0x00000000ed400000, 0x00000000ef580000, 0x00000000f9c00000)
+  object space 34304K, 26% used [0x00000000ed400000,0x00000000edcfe640,0x00000000ef580000)
+ PSPermGen       total 21504K, used 19666K [0x00000000e5c00000, 0x00000000e7100000, 0x00000000ed400000)
+  object space 21504K, 91% used [0x00000000e5c00000,0x00000000e6f34ab0,0x00000000e7100000)
+Event: 7.042 GC heap after
+Heap after GC invocations=6 (full 0):
+ PSYoungGen      total 59392K, used 6252K [0x00000000f9c00000, 0x00000000fde00000, 0x0000000100000000)
+  eden space 52736K, 0% used [0x00000000f9c00000,0x00000000f9c00000,0x00000000fcf80000)
+  from space 6656K, 93% used [0x00000000fd680000,0x00000000fdc9b248,0x00000000fdd00000)
+  to   space 7168K, 0% used [0x00000000fcf80000,0x00000000fcf80000,0x00000000fd680000)
+ ParOldGen       total 34304K, used 9209K [0x00000000ed400000, 0x00000000ef580000, 0x00000000f9c00000)
+  object space 34304K, 26% used [0x00000000ed400000,0x00000000edcfe640,0x00000000ef580000)
+ PSPermGen       total 21504K, used 19666K [0x00000000e5c00000, 0x00000000e7100000, 0x00000000ed400000)
+  object space 21504K, 91% used [0x00000000e5c00000,0x00000000e6f34ab0,0x00000000e7100000)
+}
+
+Deoptimization events (10 events):
+Event: 6.114 Thread 0x00007efe4012d800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007efe850653a8 method=java.util.Properties$LineReader.readLine()I @ 62
+Event: 6.401 Thread 0x00007efe4012d800 Uncommon trap: reason=unreached action=reinterpret pc=0x00007efe8507d0dc method=java.util.regex.Pattern.compile()V @ 271
+Event: 6.426 Thread 0x00007efe4012d800 Uncommon trap: reason=unloaded action=reinterpret pc=0x00007efe850969cc method=java.util.regex.Pattern.escape(ZZ)I @ 711
+Event: 6.468 Thread 0x00007efe4012d800 Uncommon trap: reason=unloaded action=reinterpret pc=0x00007efe8507aaa8 method=java.util.regex.Pattern.RemoveQEQuoting()V @ 109
+Event: 6.468 Thread 0x00007efe4012d800 Uncommon trap: reason=unreached action=reinterpret pc=0x00007efe850b91e4 method=java.util.regex.Pattern.sequence(Ljava/util/regex/Pattern$Node;)Ljava/util/regex/Pattern$Node; @ 536
+Event: 46.345 Thread 0x00007efe44133800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007efe850dfa74 method=com.singularity.ee.util.collections.bounded.f.c(I)Z @ 19
+Event: 66.334 Thread 0x00007efe44139800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007efe850dfa74 method=com.singularity.ee.util.collections.bounded.f.c(I)Z @ 19
+Event: 106.344 Thread 0x00007efe44133800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007efe850dfa74 method=com.singularity.ee.util.collections.bounded.f.c(I)Z @ 19
+Event: 166.344 Thread 0x00007efe44133800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007efe850dfa74 method=com.singularity.ee.util.collections.bounded.f.c(I)Z @ 19
+Event: 294.094 Thread 0x00007efe4416d000 Uncommon trap: reason=unreached action=reinterpret pc=0x00007efe850e7a30 method=java.util.concurrent.DelayQueue.take()Ljava/util/concurrent/Delayed; @ 68
+
+Internal exceptions (10 events):
+Event: 67.424 Thread 0x00007efe44139800 Threw 0x00000000fa9e4d88 at /HUDSON/workspace/7u-2-build-linux-amd64@2/jdk7u51/527/hotspot/src/share/vm/runtime/reflection.cpp:1030
+Event: 126.433 Thread 0x00007efe4416d000 Threw 0x00000000fae40518 at /HUDSON/workspace/7u-2-build-linux-amd64@2/jdk7u51/527/hotspot/src/share/vm/prims/jvm.cpp:1244
+Event: 187.655 Thread 0x00007efe4416d000 Threw 0x00000000fb44ec78 at /HUDSON/workspace/7u-2-build-linux-amd64@2/jdk7u51/527/hotspot/src/share/vm/runtime/reflection.cpp:1030
+Event: 247.663 Thread 0x00007efe4416d000 Threw 0x00000000fb5a76b0 at /HUDSON/workspace/7u-2-build-linux-amd64@2/jdk7u51/527/hotspot/src/share/vm/prims/jvm.cpp:1244
+Event: 247.663 Thread 0x00007efe4416d000 Threw 0x00000000fb5aeeb8 at /HUDSON/workspace/7u-2-build-linux-amd64@2/jdk7u51/527/hotspot/src/share/vm/prims/jvm.cpp:1244
+Event: 247.664 Thread 0x00007efe4416d000 Threw 0x00000000fb5c0828 at /HUDSON/workspace/7u-2-build-linux-amd64@2/jdk7u51/527/hotspot/src/share/vm/prims/jvm.cpp:1244
+Event: 247.664 Thread 0x00007efe4416d000 Threw 0x00000000fb5c8030 at /HUDSON/workspace/7u-2-build-linux-amd64@2/jdk7u51/527/hotspot/src/share/vm/prims/jvm.cpp:1244
+Event: 247.664 Thread 0x00007efe4416d000 Threw 0x00000000fb5d9a18 at /HUDSON/workspace/7u-2-build-linux-amd64@2/jdk7u51/527/hotspot/src/share/vm/prims/jvm.cpp:1244
+Event: 247.664 Thread 0x00007efe4416d000 Threw 0x00000000fb5e1220 at /HUDSON/workspace/7u-2-build-linux-amd64@2/jdk7u51/527/hotspot/src/share/vm/prims/jvm.cpp:1244
+Event: 367.881 Thread 0x00007efe44139800 Threw 0x00000000fb160890 at /HUDSON/workspace/7u-2-build-linux-amd64@2/jdk7u51/527/hotspot/src/share/vm/runtime/reflection.cpp:1030
+
+Events (10 events):
+Event: 166.344 Thread 0x00007efe44133800 Uncommon trap: trap_request=0xffffffde fr.pc=0x00007efe850dfa74
+Event: 166.344 Thread 0x00007efe44133800 DEOPT PACKING pc=0x00007efe850dfa74 sp=0x00007efe7c97d5e0
+Event: 166.344 Thread 0x00007efe44133800 DEOPT UNPACKING pc=0x00007efe85039045 sp=0x00007efe7c97d590 mode 2
+Event: 186.587 Executing VM operation: RevokeBias
+Event: 186.588 Executing VM operation: RevokeBias done
+Event: 294.094 Thread 0x00007efe4416d000 Uncommon trap: trap_request=0xffffffad fr.pc=0x00007efe850e7a30
+Event: 294.094 Thread 0x00007efe4416d000 DEOPT PACKING pc=0x00007efe850e7a30 sp=0x00007efe7ce88730
+Event: 294.095 Thread 0x00007efe4416d000 DEOPT UNPACKING pc=0x00007efe85039045 sp=0x00007efe7ce88708 mode 2
+Event: 307.373 Executing VM operation: RevokeBias
+Event: 307.373 Executing VM operation: RevokeBias done
+
+
+Dynamic libraries:
+00400000-00401000 r-xp 00000000 08:25 13508973                           /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/bin/java (deleted)
+00600000-00601000 rw-p 00000000 08:25 13508973                           /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/bin/java (deleted)
+014b3000-0171f000 rw-p 00000000 00:00 0                                  [heap]
+e5c00000-e7180000 rw-p 00000000 00:00 0 
+e7180000-ed400000 rw-p 00000000 00:00 0 
+ed400000-ef580000 rw-p 00000000 00:00 0 
+ef580000-f9c00000 rw-p 00000000 00:00 0 
+f9c00000-fde00000 rw-p 00000000 00:00 0 
+fde00000-100000000 rw-p 00000000 00:00 0 
+7efe10000000-7efe10028000 rw-p 00000000 00:00 0 
+7efe10028000-7efe14000000 ---p 00000000 00:00 0 
+7efe14000000-7efe14021000 rw-p 00000000 00:00 0 
+7efe14021000-7efe18000000 ---p 00000000 00:00 0 
+7efe18000000-7efe18021000 rw-p 00000000 00:00 0 
+7efe18021000-7efe1c000000 ---p 00000000 00:00 0 
+7efe1c000000-7efe1c021000 rw-p 00000000 00:00 0 
+7efe1c021000-7efe20000000 ---p 00000000 00:00 0 
+7efe20000000-7efe20021000 rw-p 00000000 00:00 0 
+7efe20021000-7efe24000000 ---p 00000000 00:00 0 
+7efe24000000-7efe24021000 rw-p 00000000 00:00 0 
+7efe24021000-7efe28000000 ---p 00000000 00:00 0 
+7efe28000000-7efe2824c000 rw-p 00000000 00:00 0 
+7efe2824c000-7efe2c000000 ---p 00000000 00:00 0 
+7efe2c000000-7efe2c021000 rw-p 00000000 00:00 0 
+7efe2c021000-7efe30000000 ---p 00000000 00:00 0 
+7efe30000000-7efe30021000 rw-p 00000000 00:00 0 
+7efe30021000-7efe34000000 ---p 00000000 00:00 0 
+7efe34000000-7efe34021000 rw-p 00000000 00:00 0 
+7efe34021000-7efe38000000 ---p 00000000 00:00 0 
+7efe38000000-7efe38029000 rw-p 00000000 00:00 0 
+7efe38029000-7efe3c000000 ---p 00000000 00:00 0 
+7efe3c000000-7efe3c021000 rw-p 00000000 00:00 0 
+7efe3c021000-7efe40000000 ---p 00000000 00:00 0 
+7efe40000000-7efe40149000 rw-p 00000000 00:00 0 
+7efe40149000-7efe44000000 ---p 00000000 00:00 0 
+7efe44000000-7efe44561000 rw-p 00000000 00:00 0 
+7efe44561000-7efe48000000 ---p 00000000 00:00 0 
+7efe48000000-7efe48021000 rw-p 00000000 00:00 0 
+7efe48021000-7efe4c000000 ---p 00000000 00:00 0 
+7efe4c000000-7efe4c021000 rw-p 00000000 00:00 0 
+7efe4c021000-7efe50000000 ---p 00000000 00:00 0 
+7efe50000000-7efe50519000 rw-p 00000000 00:00 0 
+7efe50519000-7efe54000000 ---p 00000000 00:00 0 
+7efe54000000-7efe54021000 rw-p 00000000 00:00 0 
+7efe54021000-7efe58000000 ---p 00000000 00:00 0 
+7efe58000000-7efe58021000 rw-p 00000000 00:00 0 
+7efe58021000-7efe5c000000 ---p 00000000 00:00 0 
+7efe5c000000-7efe5c589000 rw-p 00000000 00:00 0 
+7efe5c589000-7efe60000000 ---p 00000000 00:00 0 
+7efe60000000-7efe60021000 rw-p 00000000 00:00 0 
+7efe60021000-7efe64000000 ---p 00000000 00:00 0 
+7efe64000000-7efe64021000 rw-p 00000000 00:00 0 
+7efe64021000-7efe68000000 ---p 00000000 00:00 0 
+7efe68000000-7efe68021000 rw-p 00000000 00:00 0 
+7efe68021000-7efe6c000000 ---p 00000000 00:00 0 
+7efe6c000000-7efe6c021000 rw-p 00000000 00:00 0 
+7efe6c021000-7efe70000000 ---p 00000000 00:00 0 
+7efe70000000-7efe70021000 rw-p 00000000 00:00 0 
+7efe70021000-7efe74000000 ---p 00000000 00:00 0 
+7efe763db000-7efe763f2000 r-xp 00000000 08:25 11548701                   /lib/x86_64-linux-gnu/libresolv-2.21.so
+7efe763f2000-7efe765f2000 ---p 00017000 08:25 11548701                   /lib/x86_64-linux-gnu/libresolv-2.21.so
+7efe765f2000-7efe765f4000 r--p 00017000 08:25 11548701                   /lib/x86_64-linux-gnu/libresolv-2.21.so
+7efe765f4000-7efe765f5000 rw-p 00019000 08:25 11548701                   /lib/x86_64-linux-gnu/libresolv-2.21.so
+7efe765f5000-7efe765f7000 rw-p 00000000 00:00 0 
+7efe765f7000-7efe765fc000 r-xp 00000000 08:25 11548665                   /lib/x86_64-linux-gnu/libnss_dns-2.21.so
+7efe765fc000-7efe767fb000 ---p 00005000 08:25 11548665                   /lib/x86_64-linux-gnu/libnss_dns-2.21.so
+7efe767fb000-7efe767fc000 r--p 00004000 08:25 11548665                   /lib/x86_64-linux-gnu/libnss_dns-2.21.so
+7efe767fc000-7efe767fd000 rw-p 00005000 08:25 11548665                   /lib/x86_64-linux-gnu/libnss_dns-2.21.so
+7efe767fd000-7efe767fe000 ---p 00000000 00:00 0 
+7efe767fe000-7efe76ffe000 rw-p 00000000 00:00 0                          [stack:30258]
+7efe76ffe000-7efe76fff000 ---p 00000000 00:00 0 
+7efe76fff000-7efe777ff000 rw-p 00000000 00:00 0                          [stack:30257]
+7efe777ff000-7efe77800000 ---p 00000000 00:00 0 
+7efe77800000-7efe78000000 rw-p 00000000 00:00 0                          [stack:30256]
+7efe78000000-7efe78021000 rw-p 00000000 00:00 0 
+7efe78021000-7efe7c000000 ---p 00000000 00:00 0 
+7efe7c075000-7efe7c077000 r-xp 00000000 08:25 11548670                   /lib/x86_64-linux-gnu/libnss_mdns4_minimal.so.2
+7efe7c077000-7efe7c276000 ---p 00002000 08:25 11548670                   /lib/x86_64-linux-gnu/libnss_mdns4_minimal.so.2
+7efe7c276000-7efe7c277000 r--p 00001000 08:25 11548670                   /lib/x86_64-linux-gnu/libnss_mdns4_minimal.so.2
+7efe7c277000-7efe7c278000 rw-p 00002000 08:25 11548670                   /lib/x86_64-linux-gnu/libnss_mdns4_minimal.so.2
+7efe7c278000-7efe7c27b000 ---p 00000000 00:00 0 
+7efe7c27b000-7efe7c379000 rw-p 00000000 00:00 0                          [stack:30263]
+7efe7c379000-7efe7c37c000 ---p 00000000 00:00 0 
+7efe7c37c000-7efe7c47a000 rw-p 00000000 00:00 0                          [stack:30262]
+7efe7c47a000-7efe7c47d000 ---p 00000000 00:00 0 
+7efe7c47d000-7efe7c57b000 rw-p 00000000 00:00 0                          [stack:30261]
+7efe7c57b000-7efe7c57e000 ---p 00000000 00:00 0 
+7efe7c57e000-7efe7c67c000 rw-p 00000000 00:00 0                          [stack:30260]
+7efe7c67c000-7efe7c67f000 ---p 00000000 00:00 0 
+7efe7c67f000-7efe7c77d000 rw-p 00000000 00:00 0                          [stack:30259]
+7efe7c77d000-7efe7c780000 ---p 00000000 00:00 0 
+7efe7c780000-7efe7c87e000 rw-p 00000000 00:00 0                          [stack:30255]
+7efe7c87e000-7efe7c881000 ---p 00000000 00:00 0 
+7efe7c881000-7efe7c97f000 rw-p 00000000 00:00 0                          [stack:30252]
+7efe7c97f000-7efe7c982000 ---p 00000000 00:00 0 
+7efe7c982000-7efe7ca80000 rw-p 00000000 00:00 0                          [stack:30251]
+7efe7ca80000-7efe7ca83000 ---p 00000000 00:00 0 
+7efe7ca83000-7efe7cb81000 rw-p 00000000 00:00 0                          [stack:30250]
+7efe7cb81000-7efe7cb89000 r-xp 00000000 08:25 4462847                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libmanagement.so (deleted)
+7efe7cb89000-7efe7cd88000 ---p 00008000 08:25 4462847                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libmanagement.so (deleted)
+7efe7cd88000-7efe7cd89000 rw-p 00007000 08:25 4462847                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libmanagement.so (deleted)
+7efe7cd89000-7efe7cd8c000 ---p 00000000 00:00 0 
+7efe7cd8c000-7efe7ce8a000 rw-p 00000000 00:00 0                          [stack:30249]
+7efe7ce8a000-7efe7ce8d000 ---p 00000000 00:00 0 
+7efe7ce8d000-7efe7cf8b000 rw-p 00000000 00:00 0                          [stack:30248]
+7efe7cf8b000-7efe7cf8e000 ---p 00000000 00:00 0 
+7efe7cf8e000-7efe7d08c000 rw-p 00000000 00:00 0                          [stack:30233]
+7efe7d08c000-7efe7d08d000 ---p 00000000 00:00 0 
+7efe7d08d000-7efe7d88d000 rw-p 00000000 00:00 0                          [stack:30232]
+7efe7d88d000-7efe7d88e000 ---p 00000000 00:00 0 
+7efe7d88e000-7efe7e08e000 rw-p 00000000 00:00 0                          [stack:30231]
+7efe7e08e000-7efe7e0a4000 r-xp 00000000 08:25 11548635                   /lib/x86_64-linux-gnu/libgcc_s.so.1
+7efe7e0a4000-7efe7e2a3000 ---p 00016000 08:25 11548635                   /lib/x86_64-linux-gnu/libgcc_s.so.1
+7efe7e2a3000-7efe7e2a4000 rw-p 00015000 08:25 11548635                   /lib/x86_64-linux-gnu/libgcc_s.so.1
+7efe7e2a4000-7efe7e394000 r-xp 00000000 08:25 6568367                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.20
+7efe7e394000-7efe7e594000 ---p 000f0000 08:25 6568367                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.20
+7efe7e594000-7efe7e59c000 r--p 000f0000 08:25 6568367                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.20
+7efe7e59c000-7efe7e59e000 rw-p 000f8000 08:25 6568367                    /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.20
+7efe7e59e000-7efe7e5b3000 rw-p 00000000 00:00 0 
+7efe7e5da000-7efe7e606000 r-xp 00000000 08:25 13769989                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/libjzmq.so (deleted)
+7efe7e606000-7efe7e805000 ---p 0002c000 08:25 13769989                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/libjzmq.so (deleted)
+7efe7e805000-7efe7e809000 rw-p 0002b000 08:25 13769989                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/libjzmq.so (deleted)
+7efe7e809000-7efe7eb0a000 rw-p 00000000 00:00 0 
+7efe7eb0a000-7efe7eb20000 r-xp 00000000 08:25 4462843                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libnet.so (deleted)
+7efe7eb20000-7efe7ed20000 ---p 00016000 08:25 4462843                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libnet.so (deleted)
+7efe7ed20000-7efe7ed21000 rw-p 00016000 08:25 4462843                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libnet.so (deleted)
+7efe7ed21000-7efe7ed31000 r-xp 00000000 08:25 4462876                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libnio.so (deleted)
+7efe7ed31000-7efe7ef31000 ---p 00010000 08:25 4462876                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libnio.so (deleted)
+7efe7ef31000-7efe7ef32000 rw-p 00010000 08:25 4462876                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libnio.so (deleted)
+7efe7ef32000-7efe7ef33000 ---p 00000000 00:00 0 
+7efe7ef33000-7efe7f033000 rw-p 00000000 00:00 0                          [stack:30226]
+7efe7f033000-7efe7f036000 ---p 00000000 00:00 0 
+7efe7f036000-7efe7f134000 rw-p 00000000 00:00 0                          [stack:30225]
+7efe7f134000-7efe7f137000 ---p 00000000 00:00 0 
+7efe7f137000-7efe7f235000 rw-p 00000000 00:00 0                          [stack:30224]
+7efe7f235000-7efe7f238000 ---p 00000000 00:00 0 
+7efe7f238000-7efe7f336000 rw-p 00000000 00:00 0                          [stack:30223]
+7efe7f336000-7efe7f33b000 r-xp 00000000 08:25 6567559                    /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+7efe7f33b000-7efe7f53a000 ---p 00005000 08:25 6567559                    /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+7efe7f53a000-7efe7f53b000 r--p 00004000 08:25 6567559                    /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+7efe7f53b000-7efe7f53c000 rw-p 00005000 08:25 6567559                    /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+7efe7f53c000-7efe7f53e000 r-xp 00000000 08:25 6567552                    /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+7efe7f53e000-7efe7f73e000 ---p 00002000 08:25 6567552                    /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+7efe7f73e000-7efe7f73f000 r--p 00002000 08:25 6567552                    /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+7efe7f73f000-7efe7f740000 rw-p 00003000 08:25 6567552                    /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+7efe7f740000-7efe7f75d000 r-xp 00000000 08:25 6568557                    /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+7efe7f75d000-7efe7f95d000 ---p 0001d000 08:25 6568557                    /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+7efe7f95d000-7efe7f95e000 r--p 0001d000 08:25 6568557                    /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+7efe7f95e000-7efe7f95f000 rw-p 0001e000 08:25 6568557                    /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+7efe7f95f000-7efe7fa92000 r-xp 00000000 08:25 6567549                    /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0
+7efe7fa92000-7efe7fc92000 ---p 00133000 08:25 6567549                    /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0
+7efe7fc92000-7efe7fc93000 r--p 00133000 08:25 6567549                    /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0
+7efe7fc93000-7efe7fc97000 rw-p 00134000 08:25 6567549                    /usr/lib/x86_64-linux-gnu/libX11.so.6.3.0
+7efe7fc97000-7efe7fc98000 rw-p 00000000 00:00 0 
+7efe7fcb4000-7efe7fcb8000 rw-p 00000000 00:00 0 
+7efe7fcb8000-7efe7fcb9000 r--p 00000000 00:00 0 
+7efe7fcb9000-7efe7fcbb000 r--s 00006000 08:25 11152161                   /usr/share/java/jayatana.jar
+7efe7fcbb000-7efe7fcbf000 r--s 0007d000 08:25 14163691                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/jsse.jar (deleted)
+7efe7fcbf000-7efe7fcc1000 r-xp 00000000 08:25 6564247                    /usr/lib/jayatana/libjayatanaag.so
+7efe7fcc1000-7efe7fec0000 ---p 00002000 08:25 6564247                    /usr/lib/jayatana/libjayatanaag.so
+7efe7fec0000-7efe7fec1000 r--p 00001000 08:25 6564247                    /usr/lib/jayatana/libjayatanaag.so
+7efe7fec1000-7efe7fec2000 rw-p 00002000 08:25 6564247                    /usr/lib/jayatana/libjayatanaag.so
+7efe7fec2000-7efe7fec3000 r--s 00000000 08:25 11152162                   /usr/share/java/jayatanaag.jar
+7efe7fec3000-7efe7fec7000 r--s 0000f000 08:25 12983670                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/javaagent.jar (deleted)
+7efe7fec7000-7efe7fec9000 r--s 00010000 08:25 13769985                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/zt-zip-1.8.jar (deleted)
+7efe7fec9000-7efe7feed000 r--s 00154000 08:25 13769981                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/singularity-xml.jar (deleted)
+7efe7feed000-7efe7fef3000 r--s 0003f000 08:25 13769995                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/httpcore-4.3.2.jar (deleted)
+7efe7fef3000-7efe7fefa000 r--s 00047000 08:25 13769993                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/httpcore-nio-4.3.2.jar (deleted)
+7efe7fefa000-7efe7fefc000 r--s 00008000 08:25 13769992                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/httpmime-4.3.3.jar (deleted)
+7efe7fefc000-7efe7feff000 r--s 00022000 08:25 13769994                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/httpclient-cache-4.3.3.jar (deleted)
+7efe7feff000-7efe7ff02000 ---p 00000000 00:00 0 
+7efe7ff02000-7efe80000000 rw-p 00000000 00:00 0                          [stack:30222]
+7efe80000000-7efe80021000 rw-p 00000000 00:00 0 
+7efe80021000-7efe84000000 ---p 00000000 00:00 0 
+7efe84000000-7efe84002000 r--s 00005000 08:25 13769982                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/slf4j-api-1.6.6.jar (deleted)
+7efe84002000-7efe84008000 r--s 0004b000 08:25 13769986                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/asm-3.3.1.jar (deleted)
+7efe84008000-7efe84010000 r--s 0007b000 08:25 13769983                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/protobuf-java-2.5.0.jar (deleted)
+7efe84010000-7efe84021000 r--s 000bb000 08:25 13769978                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/commons-math-2.1.jar (deleted)
+7efe84021000-7efe84023000 r--s 0000d000 08:25 13769988                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/commons-logging-1.1.1.jar (deleted)
+7efe84023000-7efe84027000 r--s 00027000 08:25 13769990                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/commons-io-2.2.jar (deleted)
+7efe84027000-7efe8402a000 r--s 0001e000 08:25 13769996                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/servlet-api-2.5-6.1.3.jar (deleted)
+7efe8402a000-7efe842f3000 r--p 00000000 08:25 6564996                    /usr/lib/locale/locale-archive
+7efe842f3000-7efe842f6000 ---p 00000000 00:00 0 
+7efe842f6000-7efe843f4000 rw-p 00000000 00:00 0                          [stack:30221]
+7efe843f4000-7efe843f7000 ---p 00000000 00:00 0 
+7efe843f7000-7efe844f5000 rw-p 00000000 00:00 0                          [stack:30220]
+7efe844f5000-7efe844f6000 ---p 00000000 00:00 0 
+7efe844f6000-7efe85000000 rw-p 00000000 00:00 0                          [stack:30219]
+7efe85000000-7efe85270000 rwxp 00000000 00:00 0 
+7efe85270000-7efe88393000 rw-p 00000000 00:00 0 
+7efe88393000-7efe8c000000 ---p 00000000 00:00 0 
+7efe8c000000-7efe8c001000 r--s 00004000 08:25 13769977                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/httpcore-niossl-4.0-alpha6.jar (deleted)
+7efe8c001000-7efe8c097000 r--s 00956000 08:25 13508967                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/proxy.jar (deleted)
+7efe8c097000-7efe8c5e7000 rw-p 00000000 00:00 0 
+7efe8c5e7000-7efe8c7a4000 r--s 031a3000 08:25 14163702                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/rt.jar (deleted)
+7efe8c7a4000-7efe8d667000 rw-p 00000000 00:00 0 
+7efe8d667000-7efe8d668000 ---p 00000000 00:00 0 
+7efe8d668000-7efe8d768000 rw-p 00000000 00:00 0                          [stack:30218]
+7efe8d768000-7efe8d769000 ---p 00000000 00:00 0 
+7efe8d769000-7efe8d869000 rw-p 00000000 00:00 0                          [stack:30217]
+7efe8d869000-7efe8d86a000 ---p 00000000 00:00 0 
+7efe8d86a000-7efe8d96a000 rw-p 00000000 00:00 0                          [stack:30216]
+7efe8d96a000-7efe8d96b000 ---p 00000000 00:00 0 
+7efe8d96b000-7efe8da76000 rw-p 00000000 00:00 0                          [stack:30215]
+7efe8da76000-7efe8daa7000 rw-p 00000000 00:00 0 
+7efe8daa7000-7efe8dab8000 rw-p 00000000 00:00 0 
+7efe8dab8000-7efe8db0b000 rw-p 00000000 00:00 0 
+7efe8db0b000-7efe8db16000 rw-p 00000000 00:00 0 
+7efe8db16000-7efe8db47000 rw-p 00000000 00:00 0 
+7efe8db47000-7efe8db58000 rw-p 00000000 00:00 0 
+7efe8db58000-7efe8dbab000 rw-p 00000000 00:00 0 
+7efe8dbab000-7efe8dbcc000 rw-p 00000000 00:00 0 
+7efe8dbcc000-7efe8dbdd000 rw-p 00000000 00:00 0 
+7efe8dbdd000-7efe8dbde000 rw-p 00000000 00:00 0 
+7efe8dbde000-7efe8dbf8000 r-xp 00000000 08:25 4462889                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libzip.so (deleted)
+7efe8dbf8000-7efe8ddf8000 ---p 0001a000 08:25 4462889                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libzip.so (deleted)
+7efe8ddf8000-7efe8ddf9000 rw-p 0001a000 08:25 4462889                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libzip.so (deleted)
+7efe8ddf9000-7efe8de05000 r-xp 00000000 08:25 11548666                   /lib/x86_64-linux-gnu/libnss_files-2.21.so
+7efe8de05000-7efe8e004000 ---p 0000c000 08:25 11548666                   /lib/x86_64-linux-gnu/libnss_files-2.21.so
+7efe8e004000-7efe8e005000 r--p 0000b000 08:25 11548666                   /lib/x86_64-linux-gnu/libnss_files-2.21.so
+7efe8e005000-7efe8e006000 rw-p 0000c000 08:25 11548666                   /lib/x86_64-linux-gnu/libnss_files-2.21.so
+7efe8e006000-7efe8e011000 r-xp 00000000 08:25 11548674                   /lib/x86_64-linux-gnu/libnss_nis-2.21.so
+7efe8e011000-7efe8e210000 ---p 0000b000 08:25 11548674                   /lib/x86_64-linux-gnu/libnss_nis-2.21.so
+7efe8e210000-7efe8e211000 r--p 0000a000 08:25 11548674                   /lib/x86_64-linux-gnu/libnss_nis-2.21.so
+7efe8e211000-7efe8e212000 rw-p 0000b000 08:25 11548674                   /lib/x86_64-linux-gnu/libnss_nis-2.21.so
+7efe8e212000-7efe8e229000 r-xp 00000000 08:25 11548663                   /lib/x86_64-linux-gnu/libnsl-2.21.so
+7efe8e229000-7efe8e428000 ---p 00017000 08:25 11548663                   /lib/x86_64-linux-gnu/libnsl-2.21.so
+7efe8e428000-7efe8e429000 r--p 00016000 08:25 11548663                   /lib/x86_64-linux-gnu/libnsl-2.21.so
+7efe8e429000-7efe8e42a000 rw-p 00017000 08:25 11548663                   /lib/x86_64-linux-gnu/libnsl-2.21.so
+7efe8e42a000-7efe8e42c000 rw-p 00000000 00:00 0 
+7efe8e42c000-7efe8e434000 r-xp 00000000 08:25 11548664                   /lib/x86_64-linux-gnu/libnss_compat-2.21.so
+7efe8e434000-7efe8e633000 ---p 00008000 08:25 11548664                   /lib/x86_64-linux-gnu/libnss_compat-2.21.so
+7efe8e633000-7efe8e634000 r--p 00007000 08:25 11548664                   /lib/x86_64-linux-gnu/libnss_compat-2.21.so
+7efe8e634000-7efe8e635000 rw-p 00008000 08:25 11548664                   /lib/x86_64-linux-gnu/libnss_compat-2.21.so
+7efe8e635000-7efe8e63f000 r-xp 00000000 08:25 4462857                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libinstrument.so (deleted)
+7efe8e63f000-7efe8e83e000 ---p 0000a000 08:25 4462857                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libinstrument.so (deleted)
+7efe8e83e000-7efe8e83f000 rw-p 00009000 08:25 4462857                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libinstrument.so (deleted)
+7efe8e83f000-7efe8e868000 r-xp 00000000 08:25 4462891                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libjava.so (deleted)
+7efe8e868000-7efe8ea68000 ---p 00029000 08:25 4462891                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libjava.so (deleted)
+7efe8ea68000-7efe8ea6a000 rw-p 00029000 08:25 4462891                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libjava.so (deleted)
+7efe8ea6a000-7efe8ea77000 r-xp 00000000 08:25 4462890                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libverify.so (deleted)
+7efe8ea77000-7efe8ec76000 ---p 0000d000 08:25 4462890                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libverify.so (deleted)
+7efe8ec76000-7efe8ec78000 rw-p 0000c000 08:25 4462890                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/libverify.so (deleted)
+7efe8ec78000-7efe8ec7f000 r-xp 00000000 08:25 11548702                   /lib/x86_64-linux-gnu/librt-2.21.so
+7efe8ec7f000-7efe8ee7e000 ---p 00007000 08:25 11548702                   /lib/x86_64-linux-gnu/librt-2.21.so
+7efe8ee7e000-7efe8ee7f000 r--p 00006000 08:25 11548702                   /lib/x86_64-linux-gnu/librt-2.21.so
+7efe8ee7f000-7efe8ee80000 rw-p 00007000 08:25 11548702                   /lib/x86_64-linux-gnu/librt-2.21.so
+7efe8ee80000-7efe8ef87000 r-xp 00000000 08:25 11548652                   /lib/x86_64-linux-gnu/libm-2.21.so
+7efe8ef87000-7efe8f186000 ---p 00107000 08:25 11548652                   /lib/x86_64-linux-gnu/libm-2.21.so
+7efe8f186000-7efe8f187000 r--p 00106000 08:25 11548652                   /lib/x86_64-linux-gnu/libm-2.21.so
+7efe8f187000-7efe8f188000 rw-p 00107000 08:25 11548652                   /lib/x86_64-linux-gnu/libm-2.21.so
+7efe8f188000-7efe8fcea000 r-xp 00000000 08:25 4462880                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/server/libjvm.so (deleted)
+7efe8fcea000-7efe8feea000 ---p 00b62000 08:25 4462880                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/server/libjvm.so (deleted)
+7efe8feea000-7efe8ffad000 rw-p 00b62000 08:25 4462880                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/server/libjvm.so (deleted)
+7efe8ffad000-7efe8ffee000 rw-p 00000000 00:00 0 
+7efe8ffee000-7efe901ae000 r-xp 00000000 08:25 11548619                   /lib/x86_64-linux-gnu/libc-2.21.so
+7efe901ae000-7efe903ae000 ---p 001c0000 08:25 11548619                   /lib/x86_64-linux-gnu/libc-2.21.so
+7efe903ae000-7efe903b2000 r--p 001c0000 08:25 11548619                   /lib/x86_64-linux-gnu/libc-2.21.so
+7efe903b2000-7efe903b4000 rw-p 001c4000 08:25 11548619                   /lib/x86_64-linux-gnu/libc-2.21.so
+7efe903b4000-7efe903b8000 rw-p 00000000 00:00 0 
+7efe903b8000-7efe903bb000 r-xp 00000000 08:25 11548629                   /lib/x86_64-linux-gnu/libdl-2.21.so
+7efe903bb000-7efe905ba000 ---p 00003000 08:25 11548629                   /lib/x86_64-linux-gnu/libdl-2.21.so
+7efe905ba000-7efe905bb000 r--p 00002000 08:25 11548629                   /lib/x86_64-linux-gnu/libdl-2.21.so
+7efe905bb000-7efe905bc000 rw-p 00003000 08:25 11548629                   /lib/x86_64-linux-gnu/libdl-2.21.so
+7efe905bc000-7efe905d2000 r-xp 00000000 08:25 4462867                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/jli/libjli.so (deleted)
+7efe905d2000-7efe907d2000 ---p 00016000 08:25 4462867                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/jli/libjli.so (deleted)
+7efe907d2000-7efe907d3000 rw-p 00016000 08:25 4462867                    /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-jre/jre/lib/amd64/jli/libjli.so (deleted)
+7efe907d3000-7efe907eb000 r-xp 00000000 08:25 11548698                   /lib/x86_64-linux-gnu/libpthread-2.21.so
+7efe907eb000-7efe909eb000 ---p 00018000 08:25 11548698                   /lib/x86_64-linux-gnu/libpthread-2.21.so
+7efe909eb000-7efe909ec000 r--p 00018000 08:25 11548698                   /lib/x86_64-linux-gnu/libpthread-2.21.so
+7efe909ec000-7efe909ed000 rw-p 00019000 08:25 11548698                   /lib/x86_64-linux-gnu/libpthread-2.21.so
+7efe909ed000-7efe909f1000 rw-p 00000000 00:00 0 
+7efe909f1000-7efe90a15000 r-xp 00000000 08:25 11548605                   /lib/x86_64-linux-gnu/ld-2.21.so
+7efe90a15000-7efe90a1b000 r--s 00033000 08:25 13769991                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/commons-codec-1.6.jar (deleted)
+7efe90a1b000-7efe90a26000 r--s 00085000 08:25 13769987                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/httpclient-4.3.3.jar (deleted)
+7efe90a26000-7efe90a30000 rw-p 00000000 00:00 0 
+7efe90a30000-7efe90ae6000 rw-p 00000000 00:00 0 
+7efe90ae6000-7efe90ae9000 ---p 00000000 00:00 0 
+7efe90ae9000-7efe90beb000 rw-p 00000000 00:00 0                          [stack:30214]
+7efe90beb000-7efe90bec000 r--s 00012000 08:25 13769984                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/protobuf-java-format-1.2.jar (deleted)
+7efe90bec000-7efe90bee000 r--s 0000f000 08:25 13769976                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/commons-fileupload-1.3.1.jar (deleted)
+7efe90bee000-7efe90bf0000 r--s 00004000 08:25 13769980                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/zmq.jar (deleted)
+7efe90bf0000-7efe90bf7000 r--s 00060000 08:25 13769979                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp/asm-5.0.1.jar (deleted)
+7efe90bf7000-7efe90bff000 r--s 00051000 08:25 13508966                   /home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/singularity-log4j.jar (deleted)
+7efe90bff000-7efe90c08000 rw-p 00000000 00:00 0 
+7efe90c08000-7efe90c10000 rw-s 00000000 08:25 6293298                    /tmp/hsperfdata_jam/30210
+7efe90c10000-7efe90c11000 rw-p 00000000 00:00 0 
+7efe90c11000-7efe90c12000 r--p 00000000 00:00 0 
+7efe90c12000-7efe90c14000 rw-p 00000000 00:00 0 
+7efe90c14000-7efe90c15000 r--p 00023000 08:25 11548605                   /lib/x86_64-linux-gnu/ld-2.21.so
+7efe90c15000-7efe90c16000 rw-p 00024000 08:25 11548605                   /lib/x86_64-linux-gnu/ld-2.21.so
+7efe90c16000-7efe90c17000 rw-p 00000000 00:00 0 
+7ffecef54000-7ffecef77000 rw-p 00000000 00:00 0                          [stack]
+7ffecefcb000-7ffecefcd000 r--p 00000000 00:00 0                          [vvar]
+7ffecefcd000-7ffecefcf000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+VM Arguments:
+jvm_args: -javaagent:/usr/share/java/jayatanaag.jar -Xmx300m -Xms50m -Djava.library.path=/home/jam/workspace/ethive/ethive-server/node_modules/appdynamics/node_modules/appdynamics-proxy/proxy/lib/tp -Dappdynamics.agent.logs.dir=/tmp/appd/b61d25b35293ea968813959ecac9a5e7/proxy/l -Dcomm=/tmp/appd/b61d25b35293ea968813959ecac9a5e7/proxy/c -DagentType=NODEJS_APP_AGENT -Dappdynamics.agent.runtime.dir=/tmp/appd/b61d25b35293ea968813959ecac9a5e7/proxy/r -Dlog4j.ignoreTCL=true -XX:MaxPermSize=120m -XX:-UseGCOverheadLimit -Dregister=false 
+java_command: com.appdynamics.ee.agent.proxy.bootstrap.ProxyControlEntryPoint
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_TOOL_OPTIONS=-javaagent:/usr/share/java/jayatanaag.jar 
+PATH=/usr/local/lib/node_modules/npm/bin/node-gyp-bin:/home/jam/workspace/ethive/ethive-server/node_modules/.bin:/home/jam/.rvm/gems/ruby-2.1.0/bin:/home/jam/.rvm/gems/ruby-2.1.0@global/bin:/home/jam/.rvm/rubies/ruby-2.1.0/bin:/home/jam/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/home/jam/app/android-studio/bin:/home/jam/bin:/home/jam/.rvm/bin
+SHELL=/bin/bash
+DISPLAY=:0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0x993870], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGBUS: [libjvm.so+0x993870], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGFPE: [libjvm.so+0x8105b0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGPIPE: [libjvm.so+0x8105b0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGXFSZ: [libjvm.so+0x8105b0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGILL: [libjvm.so+0x8105b0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGUSR1: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGUSR2: [libjvm.so+0x811aa0], sa_mask[0]=0x00000000, sa_flags=0x10000004
+SIGHUP: [libjvm.so+0x812a10], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGINT: [libjvm.so+0x812a10], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGTERM: [libjvm.so+0x812a10], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGQUIT: [libjvm.so+0x812a10], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+
+
+---------------  S Y S T E M  ---------------
+
+OS:jessie/sid
+
+uname:Linux 3.19.0-22-generic #22-Ubuntu SMP Tue Jun 16 17:15:15 UTC 2015 x86_64
+libc:glibc 2.21 NPTL 2.21 
+rlimit: STACK 8192k, CORE 0k, NPROC 31847, NOFILE 65536, AS infinity
+load average:0.58 0.74 0.69
+
+/proc/meminfo:
+MemTotal:        8175372 kB
+MemFree:         1331604 kB
+MemAvailable:    3761276 kB
+Buffers:          321072 kB
+Cached:          2458776 kB
+SwapCached:         4044 kB
+Active:          3839316 kB
+Inactive:        2394744 kB
+Active(anon):    2402144 kB
+Inactive(anon):  1424156 kB
+Active(file):    1437172 kB
+Inactive(file):   970588 kB
+Unevictable:          32 kB
+Mlocked:              32 kB
+SwapTotal:      16777212 kB
+SwapFree:       16717052 kB
+Dirty:               120 kB
+Writeback:             0 kB
+AnonPages:       3451332 kB
+Mapped:           659272 kB
+Shmem:            372184 kB
+Slab:             330792 kB
+SReclaimable:     275316 kB
+SUnreclaim:        55476 kB
+KernelStack:       12704 kB
+PageTables:        61080 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    20864896 kB
+Committed_AS:   11144156 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:      319728 kB
+VmallocChunk:   34359372796 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:         0 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:     8154624 kB
+DirectMap2M:      233472 kB
+
+
+CPU:total 4 (4 cores per cpu, 1 threads per core) family 6 model 23 stepping 10, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, tsc
+
+/proc/cpuinfo:
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 23
+model name	: Intel(R) Core(TM)2 Quad CPU    Q9550  @ 2.83GHz
+stepping	: 10
+microcode	: 0xa07
+cpu MHz		: 2833.000
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 4
+core id		: 0
+cpu cores	: 4
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx lm constant_tsc arch_perfmon pebs bts rep_good nopl aperfmperf pni dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm sse4_1 xsave lahf_lm dtherm tpr_shadow vnmi flexpriority
+bugs		:
+bogomips	: 5660.99
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 23
+model name	: Intel(R) Core(TM)2 Quad CPU    Q9550  @ 2.83GHz
+stepping	: 10
+microcode	: 0xa07
+cpu MHz		: 2833.000
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 4
+core id		: 1
+cpu cores	: 4
+apicid		: 1
+initial apicid	: 1
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx lm constant_tsc arch_perfmon pebs bts rep_good nopl aperfmperf pni dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm sse4_1 xsave lahf_lm dtherm tpr_shadow vnmi flexpriority
+bugs		:
+bogomips	: 5660.99
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 23
+model name	: Intel(R) Core(TM)2 Quad CPU    Q9550  @ 2.83GHz
+stepping	: 10
+microcode	: 0xa07
+cpu MHz		: 2336.000
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 4
+core id		: 2
+cpu cores	: 4
+apicid		: 2
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx lm constant_tsc arch_perfmon pebs bts rep_good nopl aperfmperf pni dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm sse4_1 xsave lahf_lm dtherm tpr_shadow vnmi flexpriority
+bugs		:
+bogomips	: 5660.99
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 23
+model name	: Intel(R) Core(TM)2 Quad CPU    Q9550  @ 2.83GHz
+stepping	: 10
+microcode	: 0xa07
+cpu MHz		: 2833.000
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 4
+core id		: 3
+cpu cores	: 4
+apicid		: 3
+initial apicid	: 3
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx lm constant_tsc arch_perfmon pebs bts rep_good nopl aperfmperf pni dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm sse4_1 xsave lahf_lm dtherm tpr_shadow vnmi flexpriority
+bugs		:
+bogomips	: 5660.99
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+
+
+Memory: 4k page, physical 8175372k(1331604k free), swap 16777212k(16717052k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (24.51-b03) for linux-amd64 JRE (1.7.0_51-b13), built on Dec 18 2013 18:48:01 by "java_re" with gcc 4.3.0 20080428 (Red Hat 4.3.0-8)
+
+time: Sun Jul 19 15:19:37 2015
+elapsed time: 378 seconds
+
