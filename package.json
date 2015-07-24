@@ -22,11 +22,14 @@
     "koa-passport": "^1.1.6",
     "koa-router": "^5.0.1",
     "koa-static": "^1.4.9",
+    "koa-validate": "^0.2.11",
     "mongoose": "^4.0.3",
     "mongoose-path-tree": "jczerwinski/mongoose-path-tree",
     "newrelic": "^1.21.1",
     "passport-local": "^1.0.0",
-    "sendgrid": "^1.8.0"
+    "sanitize-object": "0.0.3",
+    "sendgrid": "^1.8.0",
+    "v8-profiler": "^5.2.9"
   },
   "devDependencies": {
     "apidoc": "^0.12.1",

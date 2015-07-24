@@ -134,10 +134,16 @@ ServiceSchema.virtual('parentId').get(function () {
  * @param  {User} user The User requesting the index.
  * @return {Service[]}
  */
-ServiceSchema.statics.index = function index(user) {
+ServiceSchema.statics.index = function index(user, options) {
+	var query = {};
+	if (options.level) {
+		query.level = {
+			$lte: options.level
+		}
+	};
 	// For efficiency, we do things manually here.
 	// First, get all our services.
-	return this.findAsync().then(function (services) {
+	return this.findAsync(query).then(function (services) {
 		// Next, index them by _id
 		var index = services.reduce(function (index, service) {
 			index[service._id] = service;

@@ -1,6 +1,7 @@
 var ServiceModel = require('../models/Service.js');
 var Promise = require('bluebird');
 var util = require ('../lib/util.js');
+var sanitize = require('sanitize-object');
 /**
  * Services comprise a forest. API Output is always in the form:
  *
@@ -21,26 +22,25 @@ module.exports = Service;
  */
 Service.index = function * (next) {
 	// If there's a query, do a search!
-	if (!util.isEmpty(this.query)) {
-		if (this.query.search) {
-			var query = {
-				$text: {
-					$search: this.query.search
-				}
-			};
-			var sort = {
-				score: {
-					$meta: 'textScore'
-				}
-			};
-			var services = yield ServiceModel.find(query, sort).sort(sort).limit(10).exec();
-			var user = this.state.user;
-			this.body = yield ServiceModel.show(services, user);
-			this.status = 200;
-		}
+	if (this.query.search) {
+		var query = {
+			$text: {
+				$search: this.query.search
+			}
+		};
+		var sort = {
+			score: {
+				$meta: 'textScore'
+			}
+		};
+		var services = yield ServiceModel.find(query, sort).sort(sort).limit(10).exec();
+		this.body = yield ServiceModel.show(services, this.state.user);
+		this.status = 200;
 	} else {
 		// Get top level services viewable by the user
-		this.body = yield ServiceModel.index(this.state.user);
+		this.checkQuery('level').optional().isInt({min: 1});
+		var query = sanitize('level')(this.query);
+		this.body = yield ServiceModel.index(this.state.user, query);
 		this.status = 200;
 	}
 	yield next;
