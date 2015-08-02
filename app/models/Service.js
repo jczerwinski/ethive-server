@@ -196,9 +196,8 @@ ServiceSchema.statics.index = function index(user, options) {
  * @return {ServiceObject} A plain object transformation of this Service. Null if the user is not authorized to view.
  */
 ServiceSchema.methods.show = function show(user) {
-	var service = this;
 	//needs ancestors, children, offers. check if draft...
-	return this.populateAncestors().then(function () {
+	return this.populateAncestors().then(function (service) {
 		if (service.isAdministeredBy(user)) {
 			// Admin requesting service.
 			return service.showAdmin();
