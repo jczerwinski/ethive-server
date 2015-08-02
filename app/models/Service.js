@@ -159,6 +159,8 @@ ServiceSchema.statics.index = function index(user, options) {
 			service.parent = index[service.parent];
 			return service;
 		});
+		// Done with the index. Remove for garbage collection
+		index = null;
 		// Remove services that the user doesn't administer OR that are not published. Process services for their intended viewer. Prep as POJO.
 		services = services.reduce(function (services, service) {
 			if (service.isAdministeredBy(user)) {
@@ -172,7 +174,7 @@ ServiceSchema.statics.index = function index(user, options) {
 				// Remove admins
 				delete service.admins;
 			} else {
-				// Don't show the service.
+				// Not admin and not published. Don't show the service.
 				return services;
 			}
 			// Dereference parent to flatten for transmission
