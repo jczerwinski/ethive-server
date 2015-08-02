@@ -23,36 +23,27 @@ var ServiceSchema = Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'Service',
 		index: true,
-		// Need to ensure no cycles on parent, and that parent either exists or is null
 		validate: [
 			{
-				validator: function (parentID, respond) {
-					// TODO Pre-validate hook to ensure that parentID's set as String id or Service Object are first translated to the proper ObjectId _id. We can then assume that _id is either null or an ObjectId
-					// Parent ID could be null or ObjectId
-					var service = this;
+				validator: function (parent) {
 					// Allow root level services
-					if (parentID === null) {
-						respond(true);
+					if (parent === null) {
+						return true;
 					}
-					// Disallow false/not found results from TranslateId
-					if (parentID === false) {
-						respond(false);
+					// When saving or creating services, parent must always be set as a full parent model with all ancestors attached.
+					if (!(parent instanceof ServiceModel)) {
+						return false;
 					}
-					return this.constructor.findOneAsync({
-						_id: parentID
-					}).then(function (parent) {
-						if (parent) {
-							return parent.populateAncestors().then(function () {
-								// Cycle detected. Not allowed.
-								return respond(!parent.hasAncestor(service));
-							})
-						} else {
-							// Parent does not exist. Not allowed.
-							return respond(false);
-						}
-					});
+					// Disallow cycles
+					if (parent.hasAncestor(this)) {
+						return false;
+					}
+					// Disallow giving non-category services sub-services
+					if (parent.type === 'service') {
+						return false;
+					}
 				},
-				msg: 'cycle'
+				msg: 'error'
 			}
 		]
 	},
@@ -100,6 +91,20 @@ ServiceSchema.statics.TranslateId = function TranslateId (id) {
 	}
 	return this.findOneAsync({id: id}, '_id', {lean: true}).then(function (service) {
 		return service ? service._id : false;
+	});
+};
+
+ServiceSchema.statics.GetById = function GetById (id) {
+	// Allow root level services
+	if (id === null) {
+		return Promise.resolve(null);
+	}
+	return this.findOneAsync({id: id});
+};
+
+ServiceSchema.statics.GetWithAncestorsById = function GetWithAncestorsById (id) {
+	return this.GetById(id).then(function (service) {
+
 	});
 };
 
@@ -209,10 +214,7 @@ ServiceSchema.methods.show = function show(user) {
  * Show multiple. Different from instance show -- does not populate children. Currently only designed to be used by Service Autosuggest
  */
 ServiceSchema.statics.show = function *(services, user) {
-	var ancestors = yield this.getAncestorsAsync(services);
-	services.forEach(function (service, index) {
-		attachAncestors(service, ancestors[index]);
-	});
+	var ancestors = yield this.PopulateAncestors(services);
 	services = services.map(function (service) {
 		if (service.isAdministeredBy(user)) {
 			return service.toObject();
@@ -226,6 +228,24 @@ ServiceSchema.statics.show = function *(services, user) {
 	});
 };
 
+/**
+ * Populates this services ancestors.
+ * @return {Service} This service, wrapped in a promise.
+ */
+ServiceSchema.methods.populateAncestors = function populateAncestors() {
+	return this.constructor.PopulateAncestors([this]).then(function (services) {
+		return services[0];
+	});
+};
+
+ServiceSchema.statics.PopulateAncestors = function PopulateAncestors (services) {
+	return this.getAncestorsAsync(services).then(function (ancestors) {
+		return services.map(function (service, index) {
+			return attachAncestors(service, ancestors[index]);
+		});
+	});
+};
+
 function attachAncestors (service, ancestors) {
 	ancestors.reduceRight(function (child, parent) {
 		child.parent = parent;
@@ -233,22 +253,6 @@ function attachAncestors (service, ancestors) {
 	}, service);
 	return service;
 }
-
-/**
- * Recursively populates this service's parent and its ancestors. Does nothing if already populated or if no parent exists.
- * @return {Service} This service, wrapped in a promise, for method chaining.
- */
-ServiceSchema.methods.populateAncestors = function populateAncestors() {
-	var ctx = this;
-	// If parent is already populated, or this service has no parent, return
-	if (this.populated('parent') || this.parent === undefined) {
-		return Promise.cast(this);
-	} else {
-		return this.populateAsync('parent').then(function (service) {
-			return service.parent ? service.parent.populateAncestors() : Promise.cast(ctx);
-		});
-	}
-};
 
 // Synchronous. Requires populated ancestors first.
 ServiceSchema.methods.isAdministeredBy = function isAdministeredBy(user) {

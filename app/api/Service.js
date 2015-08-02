@@ -76,13 +76,15 @@ Service.create = function * (next) {
 	} else {
 		// Create
 		// Prep document
-		var service = this.request.body;
-		service.parent = yield ServiceModel.TranslateId(service.parentId);
-		service.admins = [this.state.user._id];
+		service = this.request.body;
+		service.parent = yield ServiceModel.GetById(service.parentId);
+		delete service.parentId;
 		service = new ServiceModel(service);
-		yield service.populateAncestors();
+		if (service.parent) {
+			yield service.parent.populateAncestors();
+		}
 		if (service.isAdministeredBy(this.state.user)) {
-			// TODO still need to validate parent field, admins?
+			service.admins = [this.state.user._id];
 			yield service.saveAsync();
 			this.status = 200;
 			this.body = service;
@@ -93,7 +95,6 @@ Service.create = function * (next) {
 	}
 	yield next;
 };
-
 
 Service.save = function * (next) {
 	var response = this;
@@ -107,19 +108,30 @@ Service.save = function * (next) {
 			// Authorized to save
 			// Prep updates
 			var updates = this.request.body;
-			updates.parent = yield ServiceModel.TranslateId(updates.parentId);
+			if (updates.parentId) {
+				updates.parent = yield ServiceModel.GetById(updates.parentId);
+			} else {
+				updates.parent = null;
+			}
+			delete updates.parentId;
 			service.set(updates);
-			yield service.saveAsync().then(function(res) {
-				var product = res[0];
-				var changed = res[1];
-				// 200 OK if change successful. Something other than valaidation went wrong if not.
-				response.status = changed ? 200 : 500;
-			}).catch(function(err) {
-				// Validation error
-				response.status = 400;
-				response.body = err;
-			});
-			yield next;
+			if (service.parent) {
+				yield service.parent.populateAncestors();
+			}
+			if (service.isAdministeredBy(this.state.user)) {
+				// Authorized with new parent
+				yield service.saveAsync().then(function(res) {
+					var product = res[0];
+					var changed = res[1];
+					// 200 OK if change successful. Something other than valaidation went wrong if not.
+					response.status = changed ? 200 : 500;
+				}).catch(function(err) {
+					// Validation error
+					response.status = 400;
+					response.body = err;
+				});
+				yield next;
+			}
 		} else {
 			// Unauthorized, but hide.
 			this.status = 404;
