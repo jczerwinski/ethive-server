@@ -35,6 +35,7 @@ Provider.create = function* (next) {
 				} else {
 					throw err;
 				}
+			}
 		} else {
 			// Not logged in. Unauthorized
 			this.status = 401;
