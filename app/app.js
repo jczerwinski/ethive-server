@@ -5,10 +5,10 @@ var config = require('./config/config');
 var servers = require('./lib/servers');
 require('./lib/db');
 var app = module.exports = require('koa')()
-.use(require('koa-cors')({
+.use(require('kcors')({
 	origin: servers.web,
-	headers: 'Authorization,Content-Type',
-	methods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS'
+	exposeHeaders: 'Authorization,Content-Type',
+	allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS'
 }))
 .use(require('./lib/handleErrors'))
 .use(require('koa-logger')())
